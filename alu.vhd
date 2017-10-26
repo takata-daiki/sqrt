@@ -17,13 +17,13 @@ entity alu is
     );
 end alu;
 
-architecture BEHAVIOR of alu is 
+architecture BEHAVIOR of alu is
 
 -- Definitions --
+signal ans      : std_logic_vector(15 downto 0);
 signal atop     : std_logic;
 signal btop     : std_logic;
 signal ftop     : std_logic;
-signal ans      : std_logic_vector(15 downto 0);
 
 -- Main --
 begin
@@ -34,26 +34,44 @@ begin
                 ans <= busA + busB;
             when "0110" =>
                 ans <= busA - busB;
+            when others =>
+                ans <= "XXXXXXXXXXXXXXXX";
         end case;
     end process;
     
-    -- Top Process --
-    process(ans) begin
-        atop <= busA(15)
-        btop <= busB(15)
-        ftop <= ans(15)
+    -- Answer Process --
+    process(busA, busB, ans) begin
+        atop <= busA(15);
+        btop <= busB(15);
+        ftop <= ans(15);
+        busC <= ans;
+        if(ans = "0000000000000000") then
+            outZ <= '1';
+        else
+            outZ <= '0';
+        end if;
     end process;
     
     -- Flag Process --
-    process() begin
+    process(func, atop, btop, ftop) begin
         case func is
             when "0101" =>
-                if() then
-                busC <= busA + busB;
-                flagO <= "0" 
+                if(((atop and btop) or (atop and not ftop) or (btop and not ftop)) = '1') then
+                    outO <= '1';
+                else
+                    outO <= '0';
+                end if;
+                outS <= ftop;
             when "0110" =>
-                bus
+                if(((atop and btop) or (atop and not ftop) or (btop and not ftop)) = '1') then
+                    outO <= '0';
+                else
+                    outO <= '1';
+                end if;
+                outS <= ftop;
+            when others =>
+                outS <= ftop;
         end case;
     end process;
-
 end BEHAVIOR;
+

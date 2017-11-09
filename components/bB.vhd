@@ -9,7 +9,7 @@ entity bB is
   port(GR, PR, MAR, MDR : in std_logic_vector(15 downto 0);
        addr   : in std_logic_vector(7 downto 0);
        s_ctl  : in std_logic_vector(4 downto 0);
-       busB    : out std_logic_vector(15 downto 0));
+       busB   : out std_logic_vector(15 downto 0));
 end bB;
 
 architecture BEHAVIOR of bB is

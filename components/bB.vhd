@@ -18,6 +18,6 @@ begin
     else      S_PR_F  when S_s_ctl = "01000"
     else      S_MAR_F when S_s_ctl = "00100"
     else      S_MDR_F when S_s_ctl = "00010"
-    else      "00000000" & S_addr when S_s_ctl = "00001"
+    else      "00000000" & addr when S_s_ctl = "00001"
     else      "XXXXXXXXXXXXXXXX";
 end BEHAVIOR;

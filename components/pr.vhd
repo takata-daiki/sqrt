@@ -3,7 +3,7 @@ use ieee.std_logic_1164.all;
 use ieee.std_logic_signed.all;
 
 entity pr is
-  port(S_PRlat, clk, S_s_inc : in std_logic;
+  port(clk, S_PRlat, S_s_inc : in std_logic;
        S_BUS_C : in std_logic_vector(15 downto 0);
        S_PR_F : out std_logic_vector(15 downto 0));
 end pr;

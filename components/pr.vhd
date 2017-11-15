@@ -9,8 +9,18 @@ entity pr is
 end pr;
 
 architecture BEHAVIOR of pr is
+
+signal rst : std_logic_vector(15 downto 0);
+
 begin
-  S_PR_F <= S_BUS_C when (clk and S_PRlat) = '1'
-    else    S_BUS_C + "0000000000000001" when (clk and S_s_inc) = '1'
-    else    "XXXXXXXXXXXXXXXX";
+  S_PR_F <= rst;
+  process(clk, S_PRlat, S_s_inc) begin
+    if (clk and S_PRlat) = '1' then
+      rst <= S_BUS_C;
+    elsif (clk and S_s_inc) = '1' then
+      rst <= rst + 1;
+    else
+      null;
+    end if;
+  end process;
 end BEHAVIOR;

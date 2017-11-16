@@ -1,6 +1,6 @@
 library ieee;
 use ieee.std_logic_1164.all;
-use IEEE.std_logic_signed.all;
+use IEEE.std_logic_unsigned.all;
 
 entity fr is
     port(

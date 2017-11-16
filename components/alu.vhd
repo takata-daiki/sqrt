@@ -40,7 +40,7 @@ begin
             when "0111" =>            -- SL --
                 case busB(3 downto 0) is
                     when "0000" => null;
-                    when "0001" => shift_ov <= busA(15); ans <= busA(14 downto 0) & "0";
+                    when "0001" => shift_ov <= busA(15); ans <= busA(14 downto 0) & '0';
                     when "0010" => shift_ov <= busA(14); ans <= busA(13 downto 0) & "00";
                     when "0011" => shift_ov <= busA(13); ans <= busA(12 downto 0) & "000";
                     when "0100" => shift_ov <= busA(12); ans <= busA(11 downto 0) & "0000";

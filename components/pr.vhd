@@ -1,6 +1,6 @@
 library ieee;
 use ieee.std_logic_1164.all;
-use ieee.std_logic_signed.all;
+use ieee.std_logic_unsigned.all;
 
 entity pr is
   port(clk, S_PRlat, S_s_inc : in std_logic;
@@ -14,13 +14,15 @@ signal rst : std_logic_vector(15 downto 0);
 
 begin
   S_PR_F <= rst;
-  process(clk, S_PRlat, S_s_inc) begin
-    if (clk and S_PRlat) = '1' then
-      rst <= S_BUS_C;
-    elsif (clk and S_s_inc) = '1' then
-      rst <= rst + 1;
-    else
-      null;
+  process(clk) begin
+    if clk'event and clk = '1' then
+      if S_PRlat = '1' then
+        rst <= S_BUS_C;
+      elsif S_s_inc = '1' then
+        rst <= rst + 1;
+      else
+        null;
+      end if;
     end if;
   end process;
 end BEHAVIOR;

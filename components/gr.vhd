@@ -1,6 +1,6 @@
 library ieee;
 use ieee.std_logic_1164.all;
-use ieee.std_logic_signed.all;
+use ieee.std_logic_unsigned.all;
 
 entity gr is
   port(clk, S_GRlat : in std_logic;
@@ -16,8 +16,8 @@ signal S_GR0_F, S_GR1_F, S_GR2_F, S_GR3_F, S_GR4_F, S_GR5_F, S_GR6_F, S_GR7_F,
    : std_logic_vector(15 downto 0);
 
 begin
-  process(clk, S_GRlat, S_ctl_c, S_BUS_C) begin
-    if (clk and S_GRlat) = '1' then
+  process(clk) begin
+    if clk'event and (clk and S_GRlat) = '1' then
       case S_ctl_c is
         when "0000" => S_GR0_F <= S_BUS_C;
         when "0001" => S_GR1_F <= S_BUS_C;
@@ -42,7 +42,7 @@ begin
 
   process(S_GR0_F, S_GR1_F, S_GR2_F, S_GR3_F, S_GR4_F, S_GR5_F, S_GR6_F,
           S_GR7_F, S_GR8_F, S_GR9_F, S_GR10_F, S_GR11_F, S_GR12_F, S_GR13_F,
-          S_GR14_F, S_GR15_F, S_ctl_a, S_ctl_b) begin
+          S_GR14_F, S_GR15_F) begin
     case S_ctl_a is
       when "0000" => S_BUS_A <= S_GR0_F;
       when "0001" => S_BUS_A <= S_GR1_F;

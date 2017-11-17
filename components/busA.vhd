@@ -1,17 +1,17 @@
-library ieee; 
- use ieee.std_logic_1164.all; 
- use IEEE.std_logic_unsigned.all; 
+library ieee;
+use ieee.std_logic_1164.all; 
+use IEEE.std_logic_unsigned.all; 
 
----SI=[MDR,GR]
+---SI=[MDR,GR,ADDRESS]
 
 entity busA is  
-     port( 
-          
-	 clock:in std_logic;
-	 MDR:in std_logic_vector(15 downto 0);
-	 GR:in std_logic_vector(15 downto 0);
-	 SI:in std_logic_vector(1 downto 0);
-	 busA_out:out std_logic_vector(15 downto 0)
+    port(          
+	    clock: in std_logic;
+	    MDR  : in std_logic_vector(15 downto 0);
+	    GR   : in std_logic_vector(15 downto 0);
+	    ADDR : in std_logic_vector( 8 downto 0);
+	    SI   : in std_logic_vector( 2 downto 0);
+	    busA_out : out std_logic_vector(15 downto 0)
 	);
 end busA; 
 
@@ -19,9 +19,8 @@ end busA;
 
 architecture BEHAVIOR of busA is
 begin
-
-busA_out <=MDR when SI = "01"
-else GR when SI="10"
-else "XXXXXXXXXXXXXXXX";
-
+    busA_out <=MDR when SI = "001"
+    else GR   when SI="010"
+    else ADDR when SI="100"
+    else "XXXXXXXXXXXXXXXX";
 end BEHAVIOR;

@@ -77,26 +77,30 @@ begin
                     when "1111" => shift_ov <= busA(14); ans <= "000000000000000" & busA(15);
                     when others => null;
                 end case;
-            when "1001" =>            -- AND --
-                ans <= busA and busB;
-            when "1010" =>            -- OR --
-                ans <= busA or busB;
-            when "1011" =>            -- NOT --
-                ans <= not busA;
-            when "1100" =>            -- JMP --
-                ans <= busA;
-            when "1101" =>            -- JZE --
+            when "1001" =>            -- NAND --
+                ans <= busA nand busB;
+            when "1010" =>            -- JMP --
+                ans <= busA;  --------------------------- effective address
+            when "1011" =>            -- JZE --
                 if(inZ = '1') then
-                    ans <= busA;  ----------------------- general register
+                    ans <= busA;  ----------------------- effective address
                 else
                     ans <= busB + "0000000000000001";  -- program register
                 end if;
-            when "1110" =>            -- JMI --
+            when "1100" =>            -- JMI --
                 if(inS = '1') then
-                    ans <= busA;  ----------------------- general register
+                    ans <= busA;  ----------------------- effective address
                 else
                     ans <= busB + "0000000000000001";  -- program register
                 end if;
+            when "1100" =>            -- JOV --
+                if(inO = '1') then
+                    ans <= busA;  ----------------------- effective address
+                else
+                    ans <= busB + "0000000000000001";  -- program register
+                end if;
+            when "1101" =>            -- RJMP --
+                ans <= busA;  --------------------------- general register
             when "1111" =>            -- DISP --
                 ans <= "000000000000" & busA(3 downto 0);
             when others =>            -- select busB (not only LD,LAD,...) --

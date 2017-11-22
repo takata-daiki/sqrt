@@ -7,7 +7,13 @@ end core;
 
 architecture BEHAVIOR of core is
 
-    component alu
+    component clock is
+    port(
+        pulse : out std_logic
+    );
+    end component;
+
+    component alu is
     port(
         func : in  std_logic_vector(3 downto 0);
         busA : in  std_logic_vector(15 downto 0);
@@ -22,7 +28,7 @@ architecture BEHAVIOR of core is
     );
     end component;
     
-    component bB
+    component bB is
     port(
         S_GRB, S_PR_F, S_MAR_F, S_MDR_F : in std_logic_vector(15 downto 0);
         addr     : in  std_logic_vector(7 downto 0);
@@ -31,13 +37,13 @@ architecture BEHAVIOR of core is
     );
     end component;
 
-    component bC
+    component bC is
     port(
         S_BUS_C : inout std_logic_vector(15 downto 0)
     );
     end component;
         
-    component busA
+    component busA is
     port(           
 	    clock : in std_logic;
 	    MDR   : in std_logic_vector(15 downto 0);
@@ -47,8 +53,32 @@ architecture BEHAVIOR of core is
 	    busA_out : out std_logic_vector(15 downto 0)
 	);
     end component;
+
+    component csgc is 
+    port(
+        clk      : in  std_logic;
+        mlang    : in  std_logic_vector(15 downto 0);
+        ba_ctl   : out std_logic_vector(2 downto 0);
+        bb_ctl   : out std_logic_vector(4 downto 0);
+        address  : out std_logic_vector(7 downto 0);
+        gr_lat   : out std_logic;
+        gra      : out std_logic_vector(3 downto 0);
+        grb      : out std_logic_vector(3 downto 0);
+        grc      : out std_logic_vector(3 downto 0);
+        ir_lat   : out std_logic;
+        fr_lat   : out std_logic;
+        pr_lat   : out std_logic;
+        pr_cnt   : out std_logic;
+        mar_lat  : out std_logic;
+        mdr_lat  : out std_logic;
+        mdr_sel  : out std_logic;
+        m_read   : out std_logic;
+        m_write  : out std_logic;
+        func     : out std_logic_vector(3 downto 0)
+    );
+    end component;
     
-    component fr
+    component fr is
     port(
         clk   : in  std_logic;
         latch : in  std_logic;
@@ -61,7 +91,7 @@ architecture BEHAVIOR of core is
     );
     end component;
     
-    component gr
+    component gr is
     port(
        clk, S_GRlat : in std_logic;
        S_ctl_a, S_ctl_b, S_ctl_c : in std_logic_vector(3 downto 0);
@@ -70,7 +100,7 @@ architecture BEHAVIOR of core is
     );
     end component;
     
-    component inst
+    component inst is
     port( 
         clock : in  std_logic; 
         busA  : in  std_logic_vector(15 downto 0); 
@@ -79,7 +109,7 @@ architecture BEHAVIOR of core is
     ); 
     end component;
     
-    component MAR
+    component MAR is
     port( 
 	    clk, lat : in  std_logic;
         busC     : in  std_logic_vector(15 downto 0); 
@@ -88,7 +118,7 @@ architecture BEHAVIOR of core is
     ); 
     end component;
     
-    component mdr
+    component mdr is
     port( 
         clock : in  std_logic; 
         busC  : in  std_logic_vector(15 downto 0); 
@@ -98,8 +128,17 @@ architecture BEHAVIOR of core is
         data  : out std_logic_vector(15 downto 0)
     ); 
     end component;
+
+    component mem is
+    port(
+        clk, read, write : in std_logic;
+        S_MAR_F : in  std_logic_vector(7 downto 0);
+        S_MDR_F : in  std_logic_vector(15 downto 0);
+        data    : out std_logic_vector(15 downto 0)
+    );
+    end component;
     
-    component pr
+    component pr is
     port(
         clk, S_PRlat, S_s_inc : in std_logic;
         S_BUS_C : in  std_logic_vector(15 downto 0);
@@ -107,137 +146,194 @@ architecture BEHAVIOR of core is
     );
     end component;
 
+    -- clock
+    signal pulse : std_logic;
+
     -- alu
-        signal outZ : std_logic;
-        signal outS : std_logic;
-        signal outO : std_logic;
-        signal busC : std_logic_vector(15 downto 0);
+    signal outZ : std_logic;
+    signal outS : std_logic;
+    signal outO : std_logic;
+    -- signal busC : std_logic_vector(15 downto 0);
+    --  -> S_BUS_C
         
     -- bB
-        signal S_BUS_B : std_logic_vector(15 downto 0)
+    signal S_BUS_B_out : std_logic_vector(15 downto 0)
 
     -- bC
-        signal S_BUS_C : std_logic_vector(15 downto 0)
+    signal S_BUS_C : std_logic_vector(15 downto 0)
         
     -- busA
-        signal busA_out: std_logic_vector(15 downto 0)
+    signal busA_out: std_logic_vector(15 downto 0)
+
+    -- csgc
+    signal ba_ctl   : std_logic_vector(2 downto 0);
+    signal bb_ctl   : std_logic_vector(4 downto 0);
+    signal address  : std_logic_vector(7 downto 0);
+    signal gr_lat   : std_logic;
+    signal gra      : std_logic_vector(3 downto 0);
+    signal grb      : std_logic_vector(3 downto 0);
+    signal grc      : std_logic_vector(3 downto 0);
+    signal ir_lat   : std_logic;
+    signal fr_lat   : std_logic;
+    signal pr_lat   : std_logic;
+    signal pr_cnt   : std_logic;
+    signal mar_lat  : std_logic;
+    signal mdr_lat  : std_logic;
+    signal mdr_sel  : std_logic;
+    signal m_read   : std_logic;
+    signal m_write  : std_logic;
+    signal func     : std_logic_vector(3 downto 0)
         
     -- fr
-        signal outZF : std_logic;
-        signal outSF : std_logic;
-        signal outOF : std_logic;
+    signal outZF : std_logic;
+    signal outSF : std_logic;
+    signal outOF : std_logic;
 
     -- gr
-        signal S_BUS_A : std_logic_vector(15 downto 0);
-        signal S_BUS_B : std_logic_vector(15 downto 0);
+    signal S_BUS_A : std_logic_vector(15 downto 0);
+    signal S_BUS_B : std_logic_vector(15 downto 0);
 
     -- inst
-        signal Mlang : std_logic_vector(15 downto 0);
+    signal Mlang : std_logic_vector(15 downto 0);
 
     -- MAR  
-        signal M_ad16: std_logic_vector(15 downto 0);
-        signal M_ad8 : std_logic_vector(7 downto 0);
+    signal M_ad16: std_logic_vector(15 downto 0);
+    signal M_ad8 : std_logic_vector(7 downto 0);
 
     -- mdr
-        signal data  : std_logic_vector(15 downto 0);
+    signal data_mdr : std_logic_vector(15 downto 0);
+
+    -- memory
+    signal data_mem : std_logic_vector(15 downto 0)
 
     -- pr
-        signal S_PR_F : std_logic_vector(15 downto 0);
+    signal S_PR_F : std_logic_vector(15 downto 0);
 
 begin
 
+    clock_1 : clock port map(
+        pulse <= pulse
+    );
+    
     alu_1 : alu port map(
-    func => ,
-    busA => busA_out,busB => S_BUS_B, inZ  => outZF,inS  => outSF,inO  => outOF,outZ => outZ,outS => outS,outO => outO, busC => busC,
+        func <= func,
+        busA <= busA_out,
+        busB <= S_BUS_B_out,
+        inZ  <= outZF,
+        inS  <= outSF,
+        inO  <= outOF,
+        outZ <= outZ,
+        outS <= outS,
+        outO <= outO,
+        busC <= S_BUS_C
     );
     
     bB_1 : bB port map(
-     S_GRB => S_BUS_B,
-     S_PR_F => S_PR_F, 
-     S_MAR_F => M_ad16, 
-     S_MDR_F => MDR,
-     addr => --制御--
-     S_s_ctl --制御:入力選択--
-     S_BUS_B => S_GRB,
-     );
-     
-     bC_1 : bC port map(
-     S_BUS_C => S_BUS_C,
-     S_BUS_C => S_BUS_C,
-     );
-     
-    busA_1: busA port map(
-     clock => --使っていない--
-     MDR   => data
-     GR    => S_BUS_A
-     SI    => --制御信号busA--
-     busA_out => busA
-     );
-     
-    fr_1: fr port map(
-     
-     clk  
-     latch
-     inZF 
-     inSF 
-     inOF 
-     outZF
-     outSF
-     outOF
-     
-     
-    decode_1 : decode port map(imem, func, op, GRA, GRB);
+        S_GRB <= S_BUS_B,
+        S_PR_F <= S_PR_F,
+        S_MAR_F <= M_ad16,
+        S_MDR_F <= data_mdr,
+        addr    <= address,
+        S_s_ctl <= bb_ctl,
+        S_BUS_B <= S_BUS_B_out
+    );
 
-    g0 <= gr0;
-    g1 <= gr1;
-    g2 <= gr2;
-    a <= alu_a;
-    b <= alu_b;
-    c <= alu_c;
-    func2 <= func;
-    gra2 <= GRA;
-    grb2 <= GRB;
-    op2 <= op;
+    bC_1 : bC port map(
+        S_BUS_C <= S_BUS_C
+    );
+        
+    busA_1 : busA port map(
+	    clock <= pulse,
+	    MDR   <= data_mdr,
+	    GR    <= S_BUS_A,
+	    ADDR  <= address,
+	    SI    <= ba_ctl,
+	    busA_out <= busA_out
+	);
+
+    csgc_1 : csgc port map(
+        clk      <= pulse,
+        mlang    <= Mlang,
+        ba_ctl   <= ba_ctl,
+        bb_ctl   <= bb_ctl,
+        address  <= address,
+        gr_lat   <= gr_lat,
+        gra      <= gra,
+        grb      <= grb,
+        grc      <= grc,
+        ir_lat   <= ir_lat,
+        fr_lat   <= fr_lat,
+        pr_lat   <= pr_lat,
+        pr_cnt   <= pr_cnt,
+        mar_lat  <= mar_lat,
+        mdr_lat  <= mdr_lat,
+        mdr_sel  <= mdr_sel,
+        m_read   <= m_read,
+        m_write  <= m_write,
+        func     <= func
+    );
     
+    fr_1 : fr port map(
+        clk   <= pulse,
+        latch <= fr_lat,
+        inZF  <= outZ,
+        inSF  <= outS,
+        inOF  <= outO,
+        outZF <= outZF,
+        outSF <= outSF,
+        outOF <= outOF
+    );
+    
+    gr_1 : gr port map(
+       clk <= pulse, 
+       S_GRlat <= gr_lat,
+       S_ctl_a <= gra, 
+       S_ctl_b <= grb,
+       S_ctl_c <= grc,
+       S_BUS_C <= S_BUS_C,
+       S_BUS_A <= S_BUS_A,
+       S_BUS_B <= S_BUS_B
+    );
+    
+    inst_1 : inst port map( 
+        clock <= pulse,
+        busA  <= busA_out,
+        latch <= ir_lat,
+        Mlang <= Mlang
+    ); 
+    
+    MAR_1 : MAR port map( 
+        clk <= pulse,
+        lat <= mar_lat,
+        busC <= S_BUS_C,
+        M_ad16 <= M_ad16,
+        M_ad8 <= M_ad8
+    ); 
+    
+    mdr_1 : mdr port map( 
+        clock <= pulse,
+        busC  <= S_BUS_C,
+        latch <= mdr_lat,
+        memo  <= data_mem,
+        sel   <= mdr_sel,
+        data  <= data_mdr
+    ); 
 
-    -- ALU_A Out
-    -- execute when the inputs are changed
-    process (op, GRA, GRB) begin
-        if (op = "1000" and GRA = "0001") then -- LAD r0, alu_c
-            gr0 <= "000000000000" & GRB;
-            we <= "01";
-        elsif (op = "1000" and GRA = "0010") then -- LAD r1, alu_c
-            gr1 <= "000000000000" & GRB;
-            we <= "01";
-        elsif (op = "1001" and GRA = "0001" and GRB = "0011") then
-            gr0 <= gr2; -- LAD r0, r2
-        end if;
-    end process;
+    mem_1 : mem port map(
+        clk <= pulse,
+        read <= m_read,
+        write <= m_write,
+        S_MAR_F <= m_ad8,
+        S_MDR_F <= data_mdr,
+        data    <= data_mem
+    );
+    
+    pr_1 : pr port map(
+        clk <= pulse, 
+        S_PRlat <= pr_lat, 
+        S_s_inc <= pr_cnt,
+        S_BUS_C <= S_BUS_C,
+        S_PR_F <= S_PR_F
+    );
 
-    -- ALU_A IN
-    process(op) begin
-        if (op = "0100") then
-            alu_a <= gr0;
-            alu_b <= gr1;
-            we <= "10";
-        end if;
-    end process;
-
-    process(alu_c) begin
-        if (op = "0100") then
-            gr2 <= alu_c;
-            we <= "00";
-        end if;
-    end process;
-
-    process(clk) begin
-        if (clk' event and clk = '1') then
-            if (rst = '0') then
-                pc  <= "0000000000000000";
-            else
-                pc <= pc + "0000000000000001";
-                
-            end if;
-        end if;
-    end process;
 end BEHAVIOR;

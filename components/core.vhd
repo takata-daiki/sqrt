@@ -8,13 +8,13 @@ end core;
 architecture BEHAVIOR of core is
 
     component alu
-      port(
-        func : in std_logic_vector(3 downto 0);
-        busA : in std_logic_vector(15 downto 0);
-        busB : in std_logic_vector(15 downto 0);
-        inZ  : in std_logic;
-        inS  : in std_logic;
-        inO  : in std_logic;
+    port(
+        func : in  std_logic_vector(3 downto 0);
+        busA : in  std_logic_vector(15 downto 0);
+        busB : in  std_logic_vector(15 downto 0);
+        inZ  : in  std_logic;
+        inS  : in  std_logic;
+        inO  : in  std_logic;
         outZ : out std_logic;
         outS : out std_logic;
         outO : out std_logic;
@@ -23,37 +23,38 @@ architecture BEHAVIOR of core is
     end component;
     
     component bB
-     port(
-       S_GRB, S_PR_F, S_MAR_F, S_MDR_F : in std_logic_vector(15 downto 0);
-       addr     : in std_logic_vector(7 downto 0);
-       S_s_ctl  : in std_logic_vector(4 downto 0);
-       S_BUS_B  : out std_logic_vector(15 downto 0)
-       );
+    port(
+        S_GRB, S_PR_F, S_MAR_F, S_MDR_F : in std_logic_vector(15 downto 0);
+        addr     : in  std_logic_vector(7 downto 0);
+        S_s_ctl  : in  std_logic_vector(4 downto 0);
+        S_BUS_B  : out std_logic_vector(15 downto 0)
+    );
     end component;
 
     component bC
-     port(
-       S_BUS_C : inout std_logic_vector(15 downto 0)
-       );
+    port(
+        S_BUS_C : inout std_logic_vector(15 downto 0)
+    );
     end component;
         
     component busA
-     port(           
-	   clock:in std_logic;
-	   MDR  :in std_logic_vector(15 downto 0);
-	   GR   :in std_logic_vector(15 downto 0);
-	   SI   :in std_logic_vector(1 downto 0);
-	busA_out:out std_logic_vector(15 downto 0)
+    port(           
+	    clock : in std_logic;
+	    MDR   : in std_logic_vector(15 downto 0);
+	    GR    : in std_logic_vector(15 downto 0);
+	    ADDR  : in std_logic_vector(7 downto 0);
+	    SI    : in std_logic_vector(1 downto 0);
+	    busA_out : out std_logic_vector(15 downto 0)
 	);
     end component;
     
     component fr
     port(
-        clk   : in std_logic;
-        latch : in std_logic;
-        inZF  : in std_logic;
-        inSF  : in std_logic;
-        inOF  : in std_logic;
+        clk   : in  std_logic;
+        latch : in  std_logic;
+        inZF  : in  std_logic;
+        inSF  : in  std_logic;
+        inOF  : in  std_logic;
         outZF : out std_logic;
         outSF : out std_logic;
         outOF : out std_logic
@@ -61,55 +62,51 @@ architecture BEHAVIOR of core is
     end component;
     
     component gr
-      port(
+    port(
        clk, S_GRlat : in std_logic;
        S_ctl_a, S_ctl_b, S_ctl_c : in std_logic_vector(3 downto 0);
        S_BUS_C : in std_logic_vector(15 downto 0);
        S_BUS_A, S_BUS_B : out std_logic_vector(15 downto 0)
-       );
+    );
     end component;
     
     component inst
-       port( 
-         clock : in std_logic; 
-         busA  : in std_logic_vector(15 downto 0); 
-         latch : in std_logic;  
-         Mlang : out std_logic_vector(15 downto 0)
-     ); 
+    port( 
+        clock : in  std_logic; 
+        busA  : in  std_logic_vector(15 downto 0); 
+        latch : in  std_logic;  
+        Mlang : out std_logic_vector(15 downto 0)
+    ); 
     end component;
     
     component MAR
-     port( 
-	clk, lat: in std_logic;
-        busC  : in std_logic_vector(15 downto 0); 
-        M_ad16: out std_logic_vector(15 downto 0);
-        M_ad8 : out std_logic_vector(7 downto 0)
-     ); 
+    port( 
+	    clk, lat : in  std_logic;
+        busC     : in  std_logic_vector(15 downto 0); 
+        M_ad16   : out std_logic_vector(15 downto 0);
+        M_ad8    : out std_logic_vector(7 downto 0)
+    ); 
     end component;
     
     component mdr
-     port( 
-         clock : in std_logic; 
-         busC  : in std_logic_vector(15 downto 0); 
-         latch : in std_logic;  
-         memo  : in std_logic_vector(15 downto 0);
-         sel   : in std_logic;  
-         data  : out std_logic_vector(15 downto 0)
-     ); 
+    port( 
+        clock : in  std_logic; 
+        busC  : in  std_logic_vector(15 downto 0); 
+        latch : in  std_logic;  
+        memo  : in  std_logic_vector(15 downto 0);
+        sel   : in  std_logic;  
+        data  : out std_logic_vector(15 downto 0)
+    ); 
     end component;
     
     component pr
-     port(
-       clk, S_PRlat, S_s_inc : in std_logic;
-       S_BUS_C : in std_logic_vector(15 downto 0);
-       S_PR_F : out std_logic_vector(15 downto 0)
-       );
+    port(
+        clk, S_PRlat, S_s_inc : in std_logic;
+        S_BUS_C : in  std_logic_vector(15 downto 0);
+        S_PR_F  : out std_logic_vector(15 downto 0)
+    );
     end component;
 
-    port(
-    
-    
-    
     -- alu
         signal outZ : std_logic;
         signal outS : std_logic;

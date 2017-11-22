@@ -34,7 +34,7 @@ signal opeA      : std_logic_vector(3 downto 0);
 signal opeB_addr : std_logic_vector(7 downto 0);
 signal opeB_gr   : std_logic_vector(3 downto 0);
 signal phase   : std_logic_vector(3 downto 0);
-signal serial    : std_logic_vector(42 downto 0);
+signal serial    : std_logic_vector(41 downto 0);
 
 -- Main --
 begin
@@ -255,9 +255,9 @@ begin
         end if;
     end process;
     
-    ba_ctl   <= serial(37 downto 34);
-    bb_ctl   <= serial(33 downto 30);
-    address  <= serial(29 downto 26);
+    ba_ctl   <= serial(41 downto 39);
+    bb_ctl   <= serial(38 downto 34);
+    address  <= serial(33 downto 26);
     gr_lat   <= serial(25);
     gra      <= serial(24 downto 21);
     grb      <= serial(20 downto 17);

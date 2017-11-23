@@ -93,13 +93,13 @@ begin
                 else
                     ans <= busB + "0000000000000001";  -- program register
                 end if;
-            when "1100" =>            -- JOV --
+            when "1101" =>            -- JOV --
                 if(inO = '1') then
                     ans <= busA;  ----------------------- effective address
                 else
                     ans <= busB + "0000000000000001";  -- program register
                 end if;
-            when "1101" =>            -- RJMP --
+            when "1110" =>            -- RJMP --
                 ans <= busA;  --------------------------- general register
             when "1111" =>            -- DISP --
                 ans <= "000000000000" & busA(3 downto 0);

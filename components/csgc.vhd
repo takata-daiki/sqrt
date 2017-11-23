@@ -59,7 +59,7 @@ begin
                     phase <= "1000";
                     serial  <= "010" & "00000" & "00000000" & "1" & opeA & "0000" & opeB_gr & "0001" & "00000" & "0000";
                             --  busA |   busB  |   address  |grlat|   gra  |   grb  |   grc  | i/f/pr |mem,mda/r|  func
-                when other => null;
+                when others => null;
                 end case;
 
             when "0010" =>    -- LD2 --
@@ -73,7 +73,7 @@ begin
                 when "0010" =>  -- MDR->mem(MAR), PR=PR+1
                     phase <= "1000";
                     serial  <= "000" & "00000" & "00000000" & "0" & "0000" & "0000" & "0000" & "0001" & "00001" & "0000";
-                when other => null;
+                when others => null;
                 end case;
 
             when "0011" =>    -- LAD --
@@ -81,7 +81,7 @@ begin
                 when "0000" =>  -- address->GRA, PR=PR+1
                     phase <= "1000";
                     serial  <= "000" & "00001" & opeB_addr & "1" & "0000" & "0000" & opeA & "0001" & "00000" & "0001";
-                when other => null;
+                when others => null;
                 end case;
 
             when "0100" =>    -- STR --
@@ -95,7 +95,7 @@ begin
                 when "0010" =>  -- MDR->GRA, PR=PR+1
                     phase <= "1000";
                     serial  <= "000" & "00010" & "00000000" & "0" & "0000" & "0000" & opeA & "0001" & "00000" & "0001";
-                when other => null;
+                when others => null;
                 end case;
 
             when "0101" =>    -- ADD --
@@ -103,7 +103,7 @@ begin
                 when "0000" =>  -- GRA=GRA+GRB, PR=PR+1
                     phase <= "1000";
                     serial  <= "010" & "10000" & "00000000" & "1" & opeA & opeB_gr & opeA & "0001" & "00000" & "0101";
-                when other => null;
+                when others => null;
                 end case;
 
             when "0110" =>    -- SUB --
@@ -111,7 +111,7 @@ begin
                 when "0000" =>  -- GRA=GRA-GRB, PR=PR+1
                     phase <= "1000";
                     serial  <= "010" & "10000" & "00000000" & "1" & opeA & opeB_gr & opeA & "0001" & "00000" & "0110";
-                when other => null;
+                when others => null;
                 end case;
 
             when "0111" =>    -- SL --
@@ -119,7 +119,7 @@ begin
                 when "0000" =>  -- GRA=GRA<<GRB, PR=PR+1
                     phase <= "1000";
                     serial  <= "010" & "10000" & "00000000" & "1" & opeA & opeB_gr & opeA & "0001" & "00000" & "0111";
-                when other => null;
+                when others => null;
                 end case;
 
             when "1000" =>    -- SR --
@@ -127,7 +127,7 @@ begin
                 when "0000" =>  -- GRA=GRA>>GRB, PR=PR+1
                     phase <= "1000";
                     serial  <= "010" & "10000" & "00000000" & "1" & opeA & opeB_gr & opeA & "0001" & "00000" & "1000";
-                when other => null;
+                when others => null;
                 end case;
 
             when "1001" =>    -- NAND --
@@ -135,7 +135,7 @@ begin
                 when "0000" =>  -- GRA=GRAnandGRB, PR=PR+1
                     phase <= "1000";
                     serial  <= "010" & "10000" & "00000000" & "1" & opeA & opeB_gr & opeA & "0001" & "00000" & "1001";
-                when other => null;
+                when others => null;
                 end case;
 
             when "1010" =>    -- JMP --
@@ -144,7 +144,7 @@ begin
                     when "0000" =>  -- address->PR
                         phase <= "1000";
                         serial  <= "000" & "00001" & opeB_addr & "0" & "0000" & "0000" & "0000" & "0010" & "00000" & "0001";
-                    when other => null;
+                    when others => null;
                     end case;
                 else
                     case phase is
@@ -154,7 +154,7 @@ begin
                     when "0001" =>  -- address->PR
                         phase <= "1000";
                         serial  <= "000" & "00001" & opeB_addr & "0" & "0000" & "0000" & "0000" & "0010" & "00000" & "0001";
-                    when other => null;
+                    when others => null;
                     end case;
                 end if;
 
@@ -164,7 +164,7 @@ begin
                     when "0000" =>  -- if(ZF=1) then address->PR else PR=PR+1
                         phase <= "1000";
                         serial  <= "100" & "01000" & opeB_addr & "0" & "0000" & "0000" & "0000" & "0010" & "00000" & "1011";
-                    when other => null;
+                    when others => null;
                     end case;
                 else
                     case phase is
@@ -174,7 +174,7 @@ begin
                     when "0001" =>  -- if(ZF=1) then address->PR else PR=PR+1
                         phase <= "1000";
                         serial  <= "100" & "01000" & opeB_addr & "0" & "0000" & "0000" & "0000" & "0010" & "00000" & "1011";
-                    when other => null;
+                    when others => null;
                     end case;
                 end if;
 
@@ -184,7 +184,7 @@ begin
                     when "0000" =>  -- if(SF=1) then address->PR else PR=PR+1
                         phase <= "1000";
                         serial  <= "100" & "01000" & opeB_addr & "0" & "0000" & "0000" & "0000" & "0010" & "00000" & "1100";
-                    when other => null;
+                    when others => null;
                     end case;
                 else
                     case phase is
@@ -194,7 +194,7 @@ begin
                     when "0001" =>  -- if(SF=1) then address->PR else PR=PR+1
                         phase <= "1000";
                         serial  <= "100" & "01000" & opeB_addr & "0" & "0000" & "0000" & "0000" & "0010" & "00000" & "1100";
-                    when other => null;
+                    when others => null;
                     end case;
                 end if;
 
@@ -204,7 +204,7 @@ begin
                     when "0000" =>  -- if(OF=1) then address->PR else PR=PR+1
                         phase <= "1000";
                         serial  <= "100" & "01000" & opeB_addr & "0" & "0000" & "0000" & "0000" & "0010" & "00000" & "1101";
-                    when other => null;
+                    when others => null;
                     end case;
                 else
                     case phase is
@@ -214,7 +214,7 @@ begin
                     when "0001" =>  -- if(OF=1) then address->PR else PR=PR+1
                         phase <= "1000";
                         serial  <= "100" & "01000" & opeB_addr & "0" & "0000" & "0000" & "0000" & "0010" & "00000" & "1101";
-                    when other => null;
+                    when others => null;
                     end case;
                 end if;
 
@@ -226,11 +226,12 @@ begin
                 when "0001" =>  -- PR=PR+1
                     phase <= "1000";
                     serial  <= "000" & "00000" & "00000000" & "0" & "0000" & "0000" & "0000" & "0001" & "00000" & "0000";
-                when other => null;
+                when others => null;
                 end case;
             when "1111" =>    -- DISP --
                 phase <= "0000";
                 serial  <= "000" & "00000" & "00000000" & "0" & "0000" & "0000" & "0000" & "0000" & "00000" & "0000";
+            when others => null;
             end case;
             
             -- go next instruction --
@@ -247,7 +248,7 @@ begin
             -- when "1000" =>  -- PR->MAR, mem(MAR)->MDR, MDR->IR
             --     phase <= "0000";
             --     serial  <= "001" & "01000" & "00000000" & "0" & "0000" & "0000" & "0000" & "1000" & "11110" & "0001";
-            when other => null;
+            when others => null;
             end case;
 
         else
@@ -271,6 +272,6 @@ begin
     mdr_sel  <= serial(6);
     m_read   <= serial(5);
     m_write  <= serial(4);
-    func     <= serial(3 downto 0)
+    func     <= serial(3 downto 0);
 
 end BEHAVIOR;

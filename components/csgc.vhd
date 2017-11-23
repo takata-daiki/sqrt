@@ -31,8 +31,6 @@ architecture BEHAVIOR of csgc is
 
 -- Definitions --
 signal mnemo     : std_logic_vector(3 downto 0);
-signal mnemo_bef : std_logic_vector(3 downto 0);
-signal stopper   : std_logic;
 signal opeA      : std_logic_vector(3 downto 0);
 signal opeB_addr : std_logic_vector(7 downto 0);
 signal opeB_gr   : std_logic_vector(3 downto 0);
@@ -41,23 +39,15 @@ signal serial    : std_logic_vector(41 downto 0);
 
 -- Main --
 begin
-   test_phase <= phase;
    mnemo     <= mlang(15 downto 12);
    opeA      <= mlang(11 downto 8);
    opeB_addr <= mlang( 7 downto 0);
    opeB_gr   <= mlang( 3 downto 0);
+   test_phase <= phase;
 
     -- Process --
     process(clk) begin
         if(clk'event and (clk = '1')) then
-        
-            -- Initialize --
-            if(mnemo /= mnemo_bef) then
-                phase     <= "0000";
-                mnemo_bef <= mnemo;
-            else
-                null;
-            end if;
 
             -- do instruction --
             case mnemo is
@@ -255,11 +245,8 @@ begin
                 phase <= "1010";
                 serial  <= "000" & "00000" & "00000000" & "0" & "0000" & "0000" & "0000" & "0000" & "01110" & "0000";
             when "1010" =>  -- MDR->IR
-                phase <= "1011";
+                phase <= "0000";
                 serial  <= "001" & "00000" & "00000000" & "0" & "0000" & "0000" & "0000" & "1000" & "00000" & "0000";
-            when "1011" =>  -- nothing
-                phase <= "1100";
-                serial  <= "000" & "00000" & "00000000" & "0" & "0000" & "0000" & "0000" & "0000" & "00000" & "0000";
             when others => null;
             end case;
 

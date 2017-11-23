@@ -22,8 +22,7 @@ entity csgc is
         mdr_sel  : out std_logic;
         m_read   : out std_logic;
         m_write  : out std_logic;
-        func     : out std_logic_vector(3 downto 0);
-        test_phase : out std_logic_vector(3 downto 0)
+        func     : out std_logic_vector(3 downto 0)
     );
 end csgc;
 
@@ -43,7 +42,6 @@ begin
    opeA      <= mlang(11 downto 8);
    opeB_addr <= mlang( 7 downto 0);
    opeB_gr   <= mlang( 3 downto 0);
-   test_phase <= phase;
 
     -- Process --
     process(clk) begin

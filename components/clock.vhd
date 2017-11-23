@@ -14,6 +14,7 @@ constant STEP  : time := 10 ns;
 signal   clk   : std_logic;
 
 begin
+    pulse <= clk;
 
     process begin
         clk <= '0';

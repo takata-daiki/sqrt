@@ -1,4 +1,4 @@
-﻿library ieee;
+library ieee;
 use ieee.std_logic_1164.all;
 use IEEE.std_logic_unsigned.all;
 
@@ -157,13 +157,13 @@ architecture BEHAVIOR of core is
     --  -> S_BUS_C
         
     -- bB
-    signal S_BUS_B_out : std_logic_vector(15 downto 0)
+    signal S_BUS_B_out : std_logic_vector(15 downto 0);
 
     -- bC
-    signal S_BUS_C : std_logic_vector(15 downto 0)
+    signal S_BUS_C : std_logic_vector(15 downto 0);
         
     -- busA
-    signal busA_out: std_logic_vector(15 downto 0)
+    signal busA_out: std_logic_vector(15 downto 0);
 
     -- csgc
     signal ba_ctl   : std_logic_vector(2 downto 0);
@@ -182,7 +182,7 @@ architecture BEHAVIOR of core is
     signal mdr_sel  : std_logic;
     signal m_read   : std_logic;
     signal m_write  : std_logic;
-    signal func     : std_logic_vector(3 downto 0)
+    signal func     : std_logic_vector(3 downto 0);
         
     -- fr
     signal outZF : std_logic;
@@ -204,18 +204,18 @@ architecture BEHAVIOR of core is
     signal data_mdr : std_logic_vector(15 downto 0);
 
     -- memory
-    signal data_mem : std_logic_vector(15 downto 0)
+    signal data_mem : std_logic_vector(15 downto 0);
 
     -- pr
     signal S_PR_F : std_logic_vector(15 downto 0);
 
 begin
 
-    clock_1 : clock port map(
+    clock_a : clock port map(
         pulse <= pulse
     );
     
-    alu_1 : alu port map(
+    alu_a : alu port map(
         func <= func,
         busA <= busA_out,
         busB <= S_BUS_B_out,
@@ -228,7 +228,7 @@ begin
         busC <= S_BUS_C
     );
     
-    bB_1 : bB port map(
+    bB_a : bB port map(
         S_GRB <= S_BUS_B,
         S_PR_F <= S_PR_F,
         S_MAR_F <= M_ad16,
@@ -238,11 +238,11 @@ begin
         S_BUS_B <= S_BUS_B_out
     );
 
-    bC_1 : bC port map(
+    bC_a : bC port map(
         S_BUS_C <= S_BUS_C
     );
         
-    busA_1 : busA port map(
+    busA_a : busA port map(
 	    clock <= pulse,
 	    MDR   <= data_mdr,
 	    GR    <= S_BUS_A,
@@ -251,7 +251,7 @@ begin
 	    busA_out <= busA_out
 	);
 
-    csgc_1 : csgc port map(
+    csgc_a : csgc port map(
         clk      <= pulse,
         mlang    <= Mlang,
         ba_ctl   <= ba_ctl,
@@ -273,7 +273,7 @@ begin
         func     <= func
     );
     
-    fr_1 : fr port map(
+    fr_a : fr port map(
         clk   <= pulse,
         latch <= fr_lat,
         inZF  <= outZ,
@@ -284,7 +284,7 @@ begin
         outOF <= outOF
     );
     
-    gr_1 : gr port map(
+    gr_a : gr port map(
        clk <= pulse, 
        S_GRlat <= gr_lat,
        S_ctl_a <= gra, 
@@ -295,14 +295,14 @@ begin
        S_BUS_B <= S_BUS_B
     );
     
-    inst_1 : inst port map( 
+    inst_a : inst port map( 
         clock <= pulse,
         busA  <= busA_out,
         latch <= ir_lat,
         Mlang <= Mlang
     ); 
     
-    MAR_1 : MAR port map( 
+    MAR_a : MAR port map( 
         clk <= pulse,
         lat <= mar_lat,
         busC <= S_BUS_C,
@@ -310,7 +310,7 @@ begin
         M_ad8 <= M_ad8
     ); 
     
-    mdr_1 : mdr port map( 
+    mdr_a : mdr port map( 
         clock <= pulse,
         busC  <= S_BUS_C,
         latch <= mdr_lat,
@@ -319,7 +319,7 @@ begin
         data  <= data_mdr
     ); 
 
-    mem_1 : mem port map(
+    mem_a : mem port map(
         clk <= pulse,
         read <= m_read,
         write <= m_write,
@@ -328,7 +328,7 @@ begin
         data    <= data_mem
     );
     
-    pr_1 : pr port map(
+    pr_a : pr port map(
         clk <= pulse, 
         S_PRlat <= pr_lat, 
         S_s_inc <= pr_cnt,

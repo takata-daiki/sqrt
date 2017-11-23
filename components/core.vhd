@@ -150,64 +150,62 @@ architecture BEHAVIOR of core is
     signal pulse : std_logic;
 
     -- alu
-    signal outZ : std_logic;
-    signal outS : std_logic;
-    signal outO : std_logic;
-    -- signal busC : std_logic_vector(15 downto 0);
-    --  -> S_BUS_C
+    signal alu_fr_z : std_logic;
+    signal alu_fr_s : std_logic;
+    signal alu_fr_o : std_logic;
         
     -- bB
-    signal S_BUS_B_out : std_logic_vector(15 downto 0);
+    signal busb_alu : std_logic_vector(15 downto 0);
 
     -- bC
-    signal S_BUS_C : std_logic_vector(15 downto 0);
+    signal alu_busc_others : std_logic_vector(15 downto 0);
         
     -- busA
-    signal busA_out: std_logic_vector(15 downto 0);
+    signal busa_alu_ir: std_logic_vector(15 downto 0);
 
     -- csgc
-    signal ba_ctl   : std_logic_vector(2 downto 0);
-    signal bb_ctl   : std_logic_vector(4 downto 0);
-    signal address  : std_logic_vector(7 downto 0);
-    signal gr_lat   : std_logic;
-    signal gra      : std_logic_vector(3 downto 0);
-    signal grb      : std_logic_vector(3 downto 0);
-    signal grc      : std_logic_vector(3 downto 0);
-    signal ir_lat   : std_logic;
-    signal fr_lat   : std_logic;
-    signal pr_lat   : std_logic;
-    signal pr_cnt   : std_logic;
-    signal mar_lat  : std_logic;
-    signal mdr_lat  : std_logic;
-    signal mdr_sel  : std_logic;
-    signal m_read   : std_logic;
-    signal m_write  : std_logic;
-    signal func     : std_logic_vector(3 downto 0);
+    signal csgc_busa_ctl   : std_logic_vector(2 downto 0);
+    signal csgc_busb_ctl   : std_logic_vector(4 downto 0);
+    signal csgc_busab_addr : std_logic_vector(7 downto 0);
+    signal csgc_gr_lat     : std_logic;
+    signal csgc_gr_asel   : std_logic_vector(3 downto 0);
+    signal csgc_gr_bsel   : std_logic_vector(3 downto 0);
+    signal csgc_gr_csel   : std_logic_vector(3 downto 0);
+    signal csgc_ir_lat     : std_logic;
+    signal csgc_fr_lat     : std_logic;
+    signal csgc_pr_lat     : std_logic;
+    signal csgc_pr_cntup   : std_logic;
+    signal csgc_mar_lat    : std_logic;
+    signal csgc_mdr_lat    : std_logic;
+    signal csgc_mdr_sel    : std_logic;
+    signal csgc_mem_read   : std_logic;
+    signal csgc_mem_write  : std_logic;
+    signal csgc_alu_func   : std_logic_vector(3 downto 0);
         
     -- fr
-    signal outZF : std_logic;
-    signal outSF : std_logic;
-    signal outOF : std_logic;
+    signal fr_alu_z : std_logic;
+    signal fr_alu_s : std_logic;
+    signal fr_alu_o : std_logic;
 
     -- gr
-    signal S_BUS_A : std_logic_vector(15 downto 0);
-    signal S_BUS_B : std_logic_vector(15 downto 0);
+    signal gr_busa : std_logic_vector(15 downto 0);
+    signal gr_busb : std_logic_vector(15 downto 0);
 
     -- inst
-    signal Mlang : std_logic_vector(15 downto 0);
+    signal ir_csgc : std_logic_vector(15 downto 0);
 
     -- MAR  
-    signal M_ad16: std_logic_vector(15 downto 0);
-    signal M_ad8 : std_logic_vector(7 downto 0);
+    signal mar_busb : std_logic_vector(15 downto 0);
+    signal mar_mem  : std_logic_vector(7 downto 0);
 
     -- mdr
-    signal data_mdr : std_logic_vector(15 downto 0);
+    signal mdr_busab_mem : std_logic_vector(15 downto 0);
 
     -- memory
-    signal data_mem : std_logic_vector(15 downto 0);
+    signal mem_mdr : std_logic_vector(15 downto 0);
 
     -- pr
-    signal S_PR_F : std_logic_vector(15 downto 0);
+    signal pr_busb : std_logic_vector(15 downto 0);
 
 begin
 
@@ -216,124 +214,124 @@ begin
     );
     
     alu_a : alu port map(
-        func => func,
-        busA => busA_out,
-        busB => S_BUS_B_out,
-        inZ  => outZF,
-        inS  => outSF,
-        inO  => outOF,
-        outZ => outZ,
-        outS => outS,
-        outO => outO,
-        busC => S_BUS_C
+        func => csgc_alu_func,
+        busA => busa_alu_ir,
+        busB => busb_alu,
+        inZ  => fr_alu_z,
+        inS  => fr_alu_s,
+        inO  => fr_alu_o,
+        outZ => alu_fr_z,
+        outS => alu_fr_s,
+        outO => alu_fr_o,
+        busC => alu_busc_others
     );
     
     bB_a : bB port map(
-        S_GRB => S_BUS_B,
-        S_PR_F => S_PR_F,
-        S_MAR_F => M_ad16,
-        S_MDR_F => data_mdr,
-        addr    => address,
-        S_s_ctl => bb_ctl,
-        S_BUS_B => S_BUS_B_out
+        S_GRB   => gr_busb,
+        S_PR_F  => pr_busb,
+        S_MAR_F => mar_busb,
+        S_MDR_F => mdr_busab_mem,
+        addr    => csgc_busab_addr,
+        S_s_ctl => csgc_busb_ctl,
+        S_BUS_B => busb_alu
     );
 
     bC_a : bC port map(
-        S_BUS_C => S_BUS_C
+        S_BUS_C => alu_busc_others
     );
         
     busA_a : busA port map(
 	    clock => pulse,
-	    MDR   => data_mdr,
-	    GR    => S_BUS_A,
-	    ADDR  => address,
-	    SI    => ba_ctl,
-	    busA_out => busA_out
+	    MDR   => mdr_busab_mem,
+	    GR    => gr_busa,
+	    ADDR  => csgc_busab_addr,
+	    SI    => csgc_busa_ctl,
+	    busA_out => busa_alu_ir
 	);
 
     csgc_a : csgc port map(
         clk      => pulse,
-        mlang    => Mlang,
-        ba_ctl   => ba_ctl,
-        bb_ctl   => bb_ctl,
-        address  => address,
-        gr_lat   => gr_lat,
-        gra      => gra,
-        grb      => grb,
-        grc      => grc,
-        ir_lat   => ir_lat,
-        fr_lat   => fr_lat,
-        pr_lat   => pr_lat,
-        pr_cnt   => pr_cnt,
-        mar_lat  => mar_lat,
-        mdr_lat  => mdr_lat,
-        mdr_sel  => mdr_sel,
-        m_read   => m_read,
-        m_write  => m_write,
-        func     => func
+        mlang    => ir_csgc,
+        ba_ctl   => csgc_busa_ctl,
+        bb_ctl   => csgc_busb_ctl,
+        address  => csgc_busab_addr,
+        gr_lat   => csgc_gr_lat,
+        gra      => csgc_gr_asel,
+        grb      => csgc_gr_bsel,
+        grc      => csgc_gr_csel,
+        ir_lat   => csgc_ir_lat,
+        fr_lat   => csgc_fr_lat,
+        pr_lat   => csgc_pr_lat,
+        pr_cnt   => csgc_pr_cntup,
+        mar_lat  => csgc_mar_lat,
+        mdr_lat  => csgc_mdr_lat,
+        mdr_sel  => csgc_mdr_sel,
+        m_read   => csgc_mem_read,
+        m_write  => csgc_mem_write,
+        func     => csgc_alu_func
     );
     
     fr_a : fr port map(
         clk   => pulse,
-        latch => fr_lat,
-        inZF  => outZ,
-        inSF  => outS,
-        inOF  => outO,
-        outZF => outZF,
-        outSF => outSF,
-        outOF => outOF
+        latch => csgc_fr_lat,
+        inZF  => alu_fr_z,
+        inSF  => alu_fr_s,
+        inOF  => alu_fr_o,
+        outZF => fr_alu_z,
+        outSF => fr_alu_s,
+        outOF => fr_alu_o
     );
     
     gr_a : gr port map(
        clk => pulse, 
-       S_GRlat => gr_lat,
-       S_ctl_a => gra, 
-       S_ctl_b => grb,
-       S_ctl_c => grc,
-       S_BUS_C => S_BUS_C,
-       S_BUS_A => S_BUS_A,
-       S_BUS_B => S_BUS_B
+       S_GRlat => csgc_gr_lat,
+       S_ctl_a => csgc_gr_asel, 
+       S_ctl_b => csgc_gr_bsel,
+       S_ctl_c => csgc_gr_csel,
+       S_BUS_C => alu_busc_others,
+       S_BUS_A => gr_busa,
+       S_BUS_B => gr_busb
     );
     
     inst_a : inst port map( 
         clock => pulse,
-        busA  => busA_out,
-        latch => ir_lat,
-        Mlang => Mlang
+        busA  => busa_alu_ir,
+        latch => csgc_ir_lat,
+        Mlang => ir_csgc
     ); 
     
     MAR_a : MAR port map( 
-        clk => pulse,
-        lat => mar_lat,
-        busC => S_BUS_C,
-        M_ad16 => M_ad16,
-        M_ad8 => M_ad8
+        clk    => pulse,
+        lat    => csgc_mar_lat,
+        busC   => alu_busc_others,
+        M_ad16 => mar_busb,
+        M_ad8  => mar_mem
     ); 
     
     mdr_a : mdr port map( 
         clock => pulse,
-        busC  => S_BUS_C,
-        latch => mdr_lat,
-        memo  => data_mem,
-        sel   => mdr_sel,
-        data  => data_mdr
+        busC  => alu_busc_others,
+        latch => csgc_mdr_lat,
+        memo  => mem_mdr,
+        sel   => csgc_mdr_sel,
+        data  => mdr_busab_mem
     ); 
 
     mem_a : mem port map(
-        clk => pulse,
-        read => m_read,
-        write => m_write,
-        S_MAR_F => m_ad8,
-        S_MDR_F => data_mdr,
-        data    => data_mem
+        clk     => pulse,
+        read    => csgc_mem_read,
+        write   => csgc_mem_write,
+        S_MAR_F => mar_mem,
+        S_MDR_F => mdr_busab_mem,
+        data    => mem_mdr
     );
     
     pr_a : pr port map(
-        clk => pulse, 
-        S_PRlat => pr_lat, 
-        S_s_inc => pr_cnt,
-        S_BUS_C => S_BUS_C,
-        S_PR_F => S_PR_F
+        clk     => pulse, 
+        S_PRlat => csgc_pr_lat, 
+        S_s_inc => csgc_pr_cntup,
+        S_BUS_C => alu_busc_others,
+        S_PR_F  => pr_busb
     );
 
 end BEHAVIOR;

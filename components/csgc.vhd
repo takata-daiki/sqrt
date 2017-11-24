@@ -22,7 +22,8 @@ entity csgc is
         mdr_sel  : out std_logic;
         m_read   : out std_logic;
         m_write  : out std_logic;
-        func     : out std_logic_vector(3 downto 0)
+        func     : out std_logic_vector(3 downto 0);
+		  phaseView: out std_logic_vector(3 downto 0)
     );
 end csgc;
 
@@ -38,10 +39,11 @@ signal serial    : std_logic_vector(41 downto 0);
 
 -- Main --
 begin
-   mnemo     <= mlang(15 downto 12);
-   opeA      <= mlang(11 downto 8);
-   opeB_addr <= mlang( 7 downto 0);
-   opeB_gr   <= mlang( 3 downto 0);
+    phaseView <= phase;
+    mnemo     <= mlang(15 downto 12);
+    opeA      <= mlang(11 downto 8);
+    opeB_addr <= mlang( 7 downto 0);
+    opeB_gr   <= mlang( 3 downto 0);
 
     -- Process --
     process(clk) begin

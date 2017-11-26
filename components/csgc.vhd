@@ -23,7 +23,7 @@ entity csgc is
         m_read    : out std_logic;
         m_write   : out std_logic;
         func      : out std_logic_vector(3 downto 0);
-		  phaseView : out std_logic_vector(3 downto 0)
+	phaseView : out std_logic_vector(3 downto 0)
     );
 end csgc;
 

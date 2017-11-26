@@ -96,12 +96,12 @@ begin
     
     tb_csgc: process
     begin
-	     if(phaseView = "0000") then
-		      mnemo <= mnemo + "0001";
-            wait for STEP;
-		  else
-            wait for STEP;
-		  end if;
+        if(phaseView = "0000") then
+            mnemo <= mnemo + "0001";
+        else
+            null;
+        end if;
+        wait for STEP;
     end process;
 
 end BEHAVIOR;

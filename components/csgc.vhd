@@ -4,26 +4,26 @@ use IEEE.std_logic_unsigned.all;
 
 entity csgc is 
     port(
-        clk      : in  std_logic;
-        mlang    : in  std_logic_vector(15 downto 0);
-        ba_ctl   : out std_logic_vector(2 downto 0);
-        bb_ctl   : out std_logic_vector(4 downto 0);
-        address  : out std_logic_vector(7 downto 0);
-        gr_lat   : out std_logic;
-        gra      : out std_logic_vector(3 downto 0);
-        grb      : out std_logic_vector(3 downto 0);
-        grc      : out std_logic_vector(3 downto 0);
-        ir_lat   : out std_logic;
-        fr_lat   : out std_logic;
-        pr_lat   : out std_logic;
-        pr_cnt   : out std_logic;
-        mar_lat  : out std_logic;
-        mdr_lat  : out std_logic;
-        mdr_sel  : out std_logic;
-        m_read   : out std_logic;
-        m_write  : out std_logic;
-        func     : out std_logic_vector(3 downto 0);
-		  phaseView: out std_logic_vector(3 downto 0)
+        clk       : in  std_logic;
+        mlang     : in  std_logic_vector(15 downto 0);
+        ba_ctl    : out std_logic_vector(2 downto 0);
+        bb_ctl    : out std_logic_vector(4 downto 0);
+        address   : out std_logic_vector(7 downto 0);
+        gr_lat    : out std_logic;
+        gra       : out std_logic_vector(3 downto 0);
+        grb       : out std_logic_vector(3 downto 0);
+        grc       : out std_logic_vector(3 downto 0);
+        ir_lat    : out std_logic;
+        fr_lat    : out std_logic;
+        pr_lat    : out std_logic;
+        pr_cnt    : out std_logic;
+        mar_lat   : out std_logic;
+        mdr_lat   : out std_logic;
+        mdr_sel   : out std_logic;
+        m_read    : out std_logic;
+        m_write   : out std_logic;
+        func      : out std_logic_vector(3 downto 0);
+		  phaseView : out std_logic_vector(3 downto 0)
     );
 end csgc;
 

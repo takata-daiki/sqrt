@@ -19,19 +19,19 @@ architecture BEHAVIOR of mem is
 
 subtype RAM_WORD is std_logic_vector(15 downto 0);
 type RAM_TYPE is array (0 to 255) of RAM_WORD;
---impure function init_ram_file(RAM_FILE_NAME : in string) return RAM_TYPE is
---file RAM_FILE : TEXT is in RAM_FILE_NAME;
---variable RAM_FILE_LINE : line;
---variable RAM_DIN : RAM_TYPE;
---begin
---  for I in RAM_TYPE'range loop
---    readline(RAM_FILE, RAM_FILE_LINE);
---    hread(RAM_FILE_LINE, RAM_DIN(I));
---  end loop;
---  return RAM_DIN;
---end function;
+impure function init_ram_file(RAM_FILE_NAME : in string) return RAM_TYPE is
+file RAM_FILE : TEXT is in RAM_FILE_NAME;
+variable RAM_FILE_LINE : line;
+variable RAM_DIN : RAM_TYPE;
+begin
+  for I in RAM_TYPE'range loop
+    readline(RAM_FILE, RAM_FILE_LINE);
+    hread(RAM_FILE_LINE, RAM_DIN(I));
+  end loop;
+  return RAM_DIN;
+end function;
 
-signal RAM_DATA : RAM_TYPE;-- := init_ram_file("mem.txt");
+signal RAM_DATA : RAM_TYPE; := init_ram_file("mem.txt");
 signal addr : std_logic_vector(7 downto 0);
 
 begin

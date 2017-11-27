@@ -28,7 +28,7 @@ begin
   return RAM_DIN;
 end function;
 
-signal RAM_DATA : RAM_TYPE := init_ram_file("mem.txt");
+signal RAM_DATA : RAM_TYPE := init_ram_file("mem_16.txt");
 signal addr : std_logic_vector(7 downto 0);
 
 begin

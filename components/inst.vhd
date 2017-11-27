@@ -2,7 +2,6 @@ library ieee;
 use ieee.std_logic_1164.all; 
 use IEEE.std_logic_unsigned.all; 
  
- 
 entity inst is  
      port( 
          clock : in std_logic; 
@@ -12,23 +11,22 @@ entity inst is
      ); 
 end inst;
 
-architecture BEHAVIOR of inst is  
- 
+architecture BEHAVIOR of inst is
 
-
+signal data : std_logic_vector(15 downto 0);
 
 begin 
+    Mlang <= data;
 
-process(clock) begin
-      if(clock'event and clock = '1')then
-          if(latch = '1')then
-            Mlang <= busA;
-          else
+    process(clock) begin
+        if(clock'event and clock = '1')then
+            if(latch = '1')then
+                data <= busA;
+            else
+                null;
+            end if;
+        else
             null;
-          end if;
-       else
-         null;
-      end if;
-  end process;
-
+        end if;
+    end process;
 end BEHAVIOR; 

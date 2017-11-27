@@ -267,9 +267,9 @@ begin
         S_BUS_B => busb_alu
     );
 
-    bC_a : bC port map(
-        S_BUS_C => alu_busc_others
-    );
+    -- bC_a : bC port map(
+    --     S_BUS_C => alu_busc_others
+    -- );
         
     busA_a : busA port map(
 	    clock => pulse,

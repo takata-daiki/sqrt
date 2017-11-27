@@ -51,7 +51,7 @@ begin
 
   process(S_GR0_F, S_GR1_F, S_GR2_F, S_GR3_F, S_GR4_F, S_GR5_F, S_GR6_F,
           S_GR7_F, S_GR8_F, S_GR9_F, S_GR10_F, S_GR11_F, S_GR12_F, S_GR13_F,
-          S_GR14_F, S_GR15_F) begin
+          S_GR14_F, S_GR15_F, S_ctl_a, S_ctl_b) begin
     case S_ctl_a is
       when "0000" => S_BUS_A <= S_GR0_F;
       when "0001" => S_BUS_A <= S_GR1_F;

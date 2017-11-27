@@ -23,12 +23,12 @@ begin
   data <= RAM_DATA(conv_integer(addr));
   process(clk) begin
     if clk'event and clk = '1' then
-      if read = '1' then
-        addr <= S_MAR_F;
+      if TB_switch = '1' then
+        RAM_DATA(conv_integer(TB_ADDR)) <= TB_w_data;
       elsif write = '1' then
         RAM_DATA(conv_integer(S_MAR_F)) <= S_MDR_F;
-      elsif TB_switch = '1' then
-        RAM_DATA(conv_integer(TB_ADDR)) <= TB_w_data;
+      elsif read = '1' then
+        addr <= S_MAR_F;
       else
         null;
       end if;

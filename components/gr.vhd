@@ -6,7 +6,11 @@ entity gr is
   port(clk, S_GRlat : in std_logic;
        S_ctl_a, S_ctl_b, S_ctl_c : in std_logic_vector(3 downto 0);
        S_BUS_C : in std_logic_vector(15 downto 0);
-       S_BUS_A, S_BUS_B : out std_logic_vector(15 downto 0));
+       S_BUS_A, S_BUS_B : out std_logic_vector(15 downto 0);       
+       GR0_View,  GR1_View,  GR2_View,  GR3_View,
+       GR4_View,  GR5_View,  GR6_View,  GR7_View,
+       GR8_View,  GR9_View,  GR10_View, GR11_View,
+       GR12_View, GR13_View, GR14_View, GR15_View : out std_logic_vector(15 downto 0));
 end gr;
 
 architecture BEHAVIOR of gr is
@@ -16,6 +20,11 @@ signal S_GR0_F, S_GR1_F, S_GR2_F, S_GR3_F, S_GR4_F, S_GR5_F, S_GR6_F, S_GR7_F,
    : std_logic_vector(15 downto 0);
 
 begin
+   GR0_View <= S_GR0_F;    GR1_View <= S_GR1_F;   GR2_View <= S_GR2_F;   GR3_View <= S_GR3_F;
+   GR4_View <= S_GR4_F;    GR5_View <= S_GR5_F;   GR6_View <= S_GR6_F;   GR7_View <= S_GR7_F;
+   GR8_View <= S_GR8_F;    GR9_View <= S_GR9_F;  GR10_View <= S_GR10_F; GR11_View <= S_GR11_F;
+  GR12_View <= S_GR12_F;  GR13_View <= S_GR13_F; GR14_View <= S_GR14_F; GR15_View <= S_GR15_F;
+
   process(clk) begin
     if clk'event and (clk and S_GRlat) = '1' then
       case S_ctl_c is

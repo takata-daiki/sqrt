@@ -3,6 +3,19 @@ use ieee.std_logic_1164.all;
 use IEEE.std_logic_unsigned.all;
 
 entity core is
+    port(
+        tb_ctl     : in std_logic;
+        read_IP    : in std_logic;
+        write_IP   : in std_logic;
+        S_MAR_F_IP : in  std_logic_vector(7 downto 0);
+        S_MDR_F_IP : in  std_logic_vector(15 downto 0);
+        clk_OP     : out std_logic; 
+        data_OP    : out std_logic_vector(15 downto 0);
+        GR0_OP,  GR1_OP,  GR2_OP,  GR3_OP,
+        GR4_OP,  GR5_OP,  GR6_OP,  GR7_OP,
+        GR8_OP,  GR9_OP,  GR10_OP, GR11_OP,
+        GR12_OP, GR13_OP, GR14_OP, GR15_OP : out std_logic_vector(15 downto 0)
+    );
 end core;
 
 architecture BEHAVIOR of core is
@@ -96,7 +109,11 @@ architecture BEHAVIOR of core is
        clk, S_GRlat : in std_logic;
        S_ctl_a, S_ctl_b, S_ctl_c : in std_logic_vector(3 downto 0);
        S_BUS_C : in std_logic_vector(15 downto 0);
-       S_BUS_A, S_BUS_B : out std_logic_vector(15 downto 0)
+       S_BUS_A, S_BUS_B : out std_logic_vector(15 downto 0);              
+       GR0_View,  GR1_View,  GR2_View,  GR3_View,
+       GR4_View,  GR5_View,  GR6_View,  GR7_View,
+       GR8_View,  GR9_View,  GR10_View, GR11_View,
+       GR12_View, GR13_View, GR14_View, GR15_View : out std_logic_vector(15 downto 0)
     );
     end component;
     
@@ -189,7 +206,11 @@ architecture BEHAVIOR of core is
 
     -- gr
     signal gr_busa : std_logic_vector(15 downto 0);
-    signal gr_busb : std_logic_vector(15 downto 0);
+    signal gr_busb : std_logic_vector(15 downto 0);       
+    signal GR0_View,  GR1_View,  GR2_View,  GR3_View,
+           GR4_View,  GR5_View,  GR6_View,  GR7_View,
+           GR8_View,  GR9_View,  GR10_View, GR11_View,
+           GR12_View, GR13_View, GR14_View, GR15_View : std_logic_vector(15 downto 0);
 
     -- inst
     signal ir_csgc : std_logic_vector(15 downto 0);
@@ -208,6 +229,12 @@ architecture BEHAVIOR of core is
     signal pr_busb : std_logic_vector(15 downto 0);
 
 begin
+    GR0_OP  <= GR0_View;  GR1_OP  <= GR1_View;  GR2_OP  <= GR2_View;  GR3_OP  <= GR3_View;
+    GR4_OP  <= GR4_View;  GR5_OP  <= GR5_View;  GR6_OP  <= GR6_View;  GR7_OP  <= GR7_View;
+    GR8_OP  <= GR8_View;  GR9_OP  <= GR9_View;  GR10_OP <= GR10_View; GR11_OP <= GR11_View;
+    GR12_OP <= GR12_View; GR13_OP <= GR13_View; GR14_OP <= GR14_View; GR15_OP <= GR15_View;
+    clk_OP  <= pulse;
+    data_OP <= mem_mdr;
 
     clock_a : clock port map(
         pulse => pulse
@@ -290,7 +317,11 @@ begin
        S_ctl_c => csgc_gr_csel,
        S_BUS_C => alu_busc_others,
        S_BUS_A => gr_busa,
-       S_BUS_B => gr_busb
+       S_BUS_B => gr_busb,
+       GR0_View  => GR0_View,   GR1_View => GR1_View,   GR2_View => GR2_View,   GR3_View => GR3_View,
+       GR4_View  => GR4_View,   GR5_View => GR5_View,   GR6_View => GR6_View,   GR7_View => GR7_View,
+       GR8_View  => GR8_View,   GR9_View => GR9_View,  GR10_View => GR10_View, GR11_View => GR11_View,
+       GR12_View => GR12_View, GR13_View => GR13_View, GR14_View => GR14_View, GR15_View => GR15_View
     );
     
     inst_a : inst port map( 
@@ -333,5 +364,16 @@ begin
         S_BUS_C => alu_busc_others,
         S_PR_F  => pr_busb
     );
+
+    process(pulse) begin
+        if(pulse'event and (pulse and tb_ctl) = '1') then
+            csgc_mem_read  <= read_IP;
+            csgc_mem_write <= write_IP;
+            mar_mem <= S_MAR_F_IP;
+            mdr_busab_mem <= S_MDR_F_IP;
+        else
+            null;
+        end if;
+    end process;
 
 end BEHAVIOR;

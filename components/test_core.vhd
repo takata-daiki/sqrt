@@ -134,7 +134,7 @@ architecture BEHAVIOR of test_core is
     ); 
     end component;
 
-    component mem is
+    component test_mem is
     port(
         clk, read, write : in std_logic;
         S_MAR_F : in  std_logic_vector(7 downto 0);
@@ -343,7 +343,7 @@ begin
         data  => mdr_busab_mem
     ); 
 
-    mem_a : mem port map(
+    mem_a : test_mem port map(
         clk     => pulse,
         read    => csgc_mem_read,
         write   => csgc_mem_write,

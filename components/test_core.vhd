@@ -228,16 +228,6 @@ architecture BEHAVIOR of test_core is
     signal switch_in : std_logic := '1'; 
 
 begin
-    -- connect to entity
-    -- TB_switch <= switch_IP;
-    -- TB_addr   <= addr_IP;
-    -- TB_w_data <= w_data_IP;
-    -- clk_OP    <= pulse;
-    -- data_OP   <= mem_mdr;
-    -- GR0_OP  <= GR0_View;  GR1_OP  <= GR1_View;  GR2_OP  <= GR2_View;  GR3_OP  <= GR3_View;
-    -- GR4_OP  <= GR4_View;  GR5_OP  <= GR5_View;  GR6_OP  <= GR6_View;  GR7_OP  <= GR7_View;
-    -- GR8_OP  <= GR8_View;  GR9_OP  <= GR9_View;  GR10_OP <= GR10_View; GR11_OP <= GR11_View;
-    -- GR12_OP <= GR12_View; GR13_OP <= GR13_View; GR14_OP <= GR14_View; GR15_OP <= GR15_View;
     TB_switch <= switch_in;
 
     clock_a : clock port map(

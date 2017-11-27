@@ -9,10 +9,7 @@ entity mem is
   port(clk, read, write : in std_logic;
        S_MAR_F : in std_logic_vector(7 downto 0);
        S_MDR_F : in std_logic_vector(15 downto 0);
-       data : out std_logic_vector(15 downto 0);
-       TB_switch : in std_logic;
-       TB_addr   : in std_logic_vector(7 downto 0);
-       TB_w_data : in std_logic_vector(15 downto 0));
+       data : out std_logic_vector(15 downto 0));
 end mem;
 
 architecture BEHAVIOR of mem is
@@ -31,16 +28,14 @@ begin
   return RAM_DIN;
 end function;
 
-signal RAM_DATA : RAM_TYPE; := init_ram_file("mem.txt");
+signal RAM_DATA : RAM_TYPE := init_ram_file("mem.txt");
 signal addr : std_logic_vector(7 downto 0);
 
 begin
   data <= RAM_DATA(conv_integer(addr));
   process(clk) begin
     if clk'event and clk = '1' then
-      if TB_switch = '1' then
-        RAM_DATA(conv_integer(TB_addr)) <= TB_w_data;
-      elsif write = '1' then
+      if write = '1' then
         RAM_DATA(conv_integer(S_MAR_F)) <= S_MDR_F;
       elsif read = '1' then
         addr <= S_MAR_F;

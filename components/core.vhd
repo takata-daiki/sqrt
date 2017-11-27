@@ -3,17 +3,6 @@ use ieee.std_logic_1164.all;
 use IEEE.std_logic_unsigned.all;
 
 entity core is
-    port(
-        switch_IP  : in std_logic;
-        addr_IP    : in std_logic_vector(7 downto 0);
-        w_data_IP  : in std_logic_vector(15 downto 0);
-        clk_OP     : out std_logic; 
-        data_OP    : out std_logic_vector(15 downto 0);
-        GR0_OP,  GR1_OP,  GR2_OP,  GR3_OP,
-        GR4_OP,  GR5_OP,  GR6_OP,  GR7_OP,
-        GR8_OP,  GR9_OP,  GR10_OP, GR11_OP,
-        GR12_OP, GR13_OP, GR14_OP, GR15_OP : out std_logic_vector(15 downto 0)
-    );
 end core;
 
 architecture BEHAVIOR of core is
@@ -67,25 +56,26 @@ architecture BEHAVIOR of core is
 
     component csgc is 
     port(
-        clk      : in  std_logic;
-        mlang    : in  std_logic_vector(15 downto 0);
-        ba_ctl   : out std_logic_vector(2 downto 0);
-        bb_ctl   : out std_logic_vector(4 downto 0);
-        address  : out std_logic_vector(7 downto 0);
-        gr_lat   : out std_logic;
-        gra      : out std_logic_vector(3 downto 0);
-        grb      : out std_logic_vector(3 downto 0);
-        grc      : out std_logic_vector(3 downto 0);
-        ir_lat   : out std_logic;
-        fr_lat   : out std_logic;
-        pr_lat   : out std_logic;
-        pr_cnt   : out std_logic;
-        mar_lat  : out std_logic;
-        mdr_lat  : out std_logic;
-        mdr_sel  : out std_logic;
-        m_read   : out std_logic;
-        m_write  : out std_logic;
-        func     : out std_logic_vector(3 downto 0)
+        clk       : in  std_logic;
+        mlang     : in  std_logic_vector(15 downto 0);
+        ba_ctl    : out std_logic_vector(2 downto 0);
+        bb_ctl    : out std_logic_vector(4 downto 0);
+        address   : out std_logic_vector(7 downto 0);
+        gr_lat    : out std_logic;
+        gra       : out std_logic_vector(3 downto 0);
+        grb       : out std_logic_vector(3 downto 0);
+        grc       : out std_logic_vector(3 downto 0);
+        ir_lat    : out std_logic;
+        fr_lat    : out std_logic;
+        pr_lat    : out std_logic;
+        pr_cnt    : out std_logic;
+        mar_lat   : out std_logic;
+        mdr_lat   : out std_logic;
+        mdr_sel   : out std_logic;
+        m_read    : out std_logic;
+        m_write   : out std_logic;
+        func      : out std_logic_vector(3 downto 0);
+	    phaseView : out std_logic_vector(3 downto 0)
     );
     end component;
     
@@ -149,10 +139,7 @@ architecture BEHAVIOR of core is
         clk, read, write : in std_logic;
         S_MAR_F : in  std_logic_vector(7 downto 0);
         S_MDR_F : in  std_logic_vector(15 downto 0);
-        data    : out std_logic_vector(15 downto 0);
-        TB_switch : in std_logic;
-        TB_addr   : in std_logic_vector(7 downto 0);
-        TB_w_data : in std_logic_vector(15 downto 0)
+        data    : out std_logic_vector(15 downto 0)
     );
     end component;
     
@@ -199,6 +186,7 @@ architecture BEHAVIOR of core is
     signal csgc_mem_read   : std_logic;
     signal csgc_mem_write  : std_logic;
     signal csgc_alu_func   : std_logic_vector(3 downto 0);
+    signal phaseView       : std_logic_vector(3 downto 0);
         
     -- fr
     signal fr_alu_z : std_logic;
@@ -225,25 +213,11 @@ architecture BEHAVIOR of core is
 
     -- memory
     signal mem_mdr   : std_logic_vector(15 downto 0);
-    signal TB_switch : std_logic;
-    signal TB_addr   : std_logic_vector(7 downto 0);
-    signal TB_w_data : std_logic_vector(15 downto 0);
 
     -- pr
     signal pr_busb : std_logic_vector(15 downto 0);
 
 begin
-    -- connect to entity
-    TB_switch <= switch_IP;
-    TB_addr   <= addr_IP;
-    TB_w_data <= w_data_IP;
-    clk_OP    <= pulse;
-    data_OP   <= mem_mdr;
-    GR0_OP  <= GR0_View;  GR1_OP  <= GR1_View;  GR2_OP  <= GR2_View;  GR3_OP  <= GR3_View;
-    GR4_OP  <= GR4_View;  GR5_OP  <= GR5_View;  GR6_OP  <= GR6_View;  GR7_OP  <= GR7_View;
-    GR8_OP  <= GR8_View;  GR9_OP  <= GR9_View;  GR10_OP <= GR10_View; GR11_OP <= GR11_View;
-    GR12_OP <= GR12_View; GR13_OP <= GR13_View; GR14_OP <= GR14_View; GR15_OP <= GR15_View;
-
     clock_a : clock port map(
         pulse => pulse
     );
@@ -271,9 +245,9 @@ begin
         S_BUS_B => busb_alu
     );
 
-    bC_a : bC port map(
-        S_BUS_C => alu_busc_others
-    );
+    -- bC_a : bC port map(
+    --     S_BUS_C => alu_busc_others
+    -- );
         
     busA_a : busA port map(
 	    clock => pulse,
@@ -285,25 +259,26 @@ begin
 	);
 
     csgc_a : csgc port map(
-        clk      => pulse,
-        mlang    => ir_csgc,
-        ba_ctl   => csgc_busa_ctl,
-        bb_ctl   => csgc_busb_ctl,
-        address  => csgc_busab_addr,
-        gr_lat   => csgc_gr_lat,
-        gra      => csgc_gr_asel,
-        grb      => csgc_gr_bsel,
-        grc      => csgc_gr_csel,
-        ir_lat   => csgc_ir_lat,
-        fr_lat   => csgc_fr_lat,
-        pr_lat   => csgc_pr_lat,
-        pr_cnt   => csgc_pr_cntup,
-        mar_lat  => csgc_mar_lat,
-        mdr_lat  => csgc_mdr_lat,
-        mdr_sel  => csgc_mdr_sel,
-        m_read   => csgc_mem_read,
-        m_write  => csgc_mem_write,
-        func     => csgc_alu_func
+        clk       => pulse,
+        mlang     => ir_csgc,
+        ba_ctl    => csgc_busa_ctl,
+        bb_ctl    => csgc_busb_ctl,
+        address   => csgc_busab_addr,
+        gr_lat    => csgc_gr_lat,
+        gra       => csgc_gr_asel,
+        grb       => csgc_gr_bsel,
+        grc       => csgc_gr_csel,
+        ir_lat    => csgc_ir_lat,
+        fr_lat    => csgc_fr_lat,
+        pr_lat    => csgc_pr_lat,
+        pr_cnt    => csgc_pr_cntup,
+        mar_lat   => csgc_mar_lat,
+        mdr_lat   => csgc_mdr_lat,
+        mdr_sel   => csgc_mdr_sel,
+        m_read    => csgc_mem_read,
+        m_write   => csgc_mem_write,
+        func      => csgc_alu_func,
+        phaseView => phaseView
     );
     
     fr_a : fr port map(
@@ -362,10 +337,7 @@ begin
         write   => csgc_mem_write,
         S_MAR_F => mar_mem,
         S_MDR_F => mdr_busab_mem,
-        data    => mem_mdr,
-        TB_switch => TB_switch,
-        TB_addr   => TB_addr,
-        TB_w_data => TB_w_data
+        data    => mem_mdr
     );
     
     pr_a : pr port map(

@@ -112,7 +112,7 @@ begin
         end case;
     end process;
 
-    -- Answer Process --
+    -- GetTop Process --
     process(busA, busB, ans) begin
         atop <= busA(15);
         btop <= busB(15);

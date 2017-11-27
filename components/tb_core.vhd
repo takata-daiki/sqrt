@@ -22,7 +22,8 @@ architecture BEHAVIOR of tb_core is
     end component;
 
     signal switch_IP  : std_logic := '1';
-    signal addr_IP    : std_logic_vector(7 downto 0)  := "00000011";
+    signal addr_IP    : std_logic_vector(7 downto 0);
+    signal addr       : std_logic_vector(7 downto 0) := "00000011";
     signal w_data_IP  : std_logic_vector(15 downto 0) := "0000000000000000";
     signal clk_OP     : std_logic; 
     signal data_OP    : std_logic_vector(15 downto 0);
@@ -43,18 +44,20 @@ begin
 
     process(clk_OP) begin
         if(clk_OP'event and (clk_OP and switch_IP) = '1') then
-            case addr_IP is
+            addr_IP <= addr;
+            case addr is
                 when "00000000" =>
                     w_data_IP <= "0011000001110101";
-                    switch_IP <= '0';             
                 when "00000001" =>
                     w_data_IP <= "0011000100010101";
                 when "00000010" =>
                     w_data_IP <= "0101000000000001";
+                when "11111111" =>
+                    switch_IP <= '0';
                 when others =>
                     null;
             end case;     
-            addr_IP <= addr_IP - "00000001";
+            addr <= addr - "00000001";
         else
             null;
         end if;

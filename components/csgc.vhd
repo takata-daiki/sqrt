@@ -57,9 +57,9 @@ begin
 
             when "0001" =>     -- LD1 --
                 case phase is
-                when "0000" =>  -- GRA->GRB, PR=PR+1
+                when "0000" =>  -- GRB->GRA, PR=PR+1
                     phase <= "1000";
-                    serial  <= "010" & "00000" & "00000000" & "1" & opeA & "0000" & opeB_gr & "0001" & "00000" & "0000";
+                    serial  <= "010" & "00000" & "00000000" & "1" & opeB_gr & "0000" & opeA & "0001" & "00000" & "0000";
                             --  busA |   busB  |   address  |grlat|   gra  |   grb  |   grc  | i/f/pr |mem,mda/r|  func
                 when others => null;
                 end case;

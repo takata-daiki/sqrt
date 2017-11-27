@@ -43,7 +43,7 @@ begin
                 ans <= busA - busB;
             when "0111" =>            -- SL --
                 case busB(3 downto 0) is
-                    when "0000" => null;
+                    when "0000" => shift_ov <= '0'; ans <= busA;
                     when "0001" => shift_ov <= busA(15); ans <= busA(14 downto 0) & '0';
                     when "0010" => shift_ov <= busA(14); ans <= busA(13 downto 0) & "00";
                     when "0011" => shift_ov <= busA(13); ans <= busA(12 downto 0) & "000";
@@ -59,11 +59,11 @@ begin
                     when "1101" => shift_ov <= busA( 3); ans <= busA( 2 downto 0) & "0000000000000";
                     when "1110" => shift_ov <= busA( 2); ans <= busA( 1 downto 0) & "00000000000000";
                     when "1111" => shift_ov <= busA( 1); ans <= busA(0) & "000000000000000";
-                    when others => null;
+                    when others => shift_ov <= '0'; ans <= busA;
                 end case;
             when "1000" =>            -- SR --
                 case busB(3 downto 0) is
-                    when "0000" => null;
+                    when "0000" => shift_ov <= '0'; ans <= busA;
                     when "0001" => shift_ov <= busA( 0); ans <= '0' & busA(15 downto 1);
                     when "0010" => shift_ov <= busA( 1); ans <= "00" & busA(15 downto 2);
                     when "0011" => shift_ov <= busA( 2); ans <= "000" & busA(15 downto 3);
@@ -79,7 +79,7 @@ begin
                     when "1101" => shift_ov <= busA(12); ans <= "0000000000000" & busA(15 downto 13);
                     when "1110" => shift_ov <= busA(13); ans <= "00000000000000" & busA(15 downto 14);
                     when "1111" => shift_ov <= busA(14); ans <= "000000000000000" & busA(15);
-                    when others => null;
+                    when others => shift_ov <= '0'; ans <= busA;
                 end case;
             when "1001" =>            -- NAND --
                 ans <= busA nand busB;

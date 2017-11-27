@@ -4,11 +4,9 @@ use IEEE.std_logic_unsigned.all;
 
 entity core is
     port(
-        tb_ctl     : in std_logic;
-        read_IP    : in std_logic;
-        write_IP   : in std_logic;
-        S_MAR_F_IP : in  std_logic_vector(7 downto 0);
-        S_MDR_F_IP : in  std_logic_vector(15 downto 0);
+        switch_IP  : in std_logic;
+        addr_IP    : in std_logic_vector(7 downto 0);
+        w_data_IP  : in std_logic_vector(15 downto 0);
         clk_OP     : out std_logic; 
         data_OP    : out std_logic_vector(15 downto 0);
         GR0_OP,  GR1_OP,  GR2_OP,  GR3_OP,
@@ -151,7 +149,10 @@ architecture BEHAVIOR of core is
         clk, read, write : in std_logic;
         S_MAR_F : in  std_logic_vector(7 downto 0);
         S_MDR_F : in  std_logic_vector(15 downto 0);
-        data    : out std_logic_vector(15 downto 0)
+        data    : out std_logic_vector(15 downto 0);
+        TB_switch : in std_logic;
+        TB_addr   : in std_logic_vector(7 downto 0);
+        TB_w_data : in std_logic_vector(15 downto 0)
     );
     end component;
     
@@ -223,18 +224,23 @@ architecture BEHAVIOR of core is
     signal mdr_busab_mem : std_logic_vector(15 downto 0);
 
     -- memory
-    signal mem_mdr : std_logic_vector(15 downto 0);
+    signal mem_mdr   : std_logic_vector(15 downto 0);
+    signal TB_switch : std_logic;
+    signal TB_addr   : std_logic_vector(7 downto 0);
+    signal TB_w_data : std_logic_vector(15 downto 0);
 
     -- pr
     signal pr_busb : std_logic_vector(15 downto 0);
 
 begin
+    -- connect to entity
+    TB_switch <= switch_IP;
+    TB_addr   <= addr_IP;
+    TB_w_data <= w_data_IP;
     GR0_OP  <= GR0_View;  GR1_OP  <= GR1_View;  GR2_OP  <= GR2_View;  GR3_OP  <= GR3_View;
     GR4_OP  <= GR4_View;  GR5_OP  <= GR5_View;  GR6_OP  <= GR6_View;  GR7_OP  <= GR7_View;
     GR8_OP  <= GR8_View;  GR9_OP  <= GR9_View;  GR10_OP <= GR10_View; GR11_OP <= GR11_View;
     GR12_OP <= GR12_View; GR13_OP <= GR13_View; GR14_OP <= GR14_View; GR15_OP <= GR15_View;
-    clk_OP  <= pulse;
-    data_OP <= mem_mdr;
 
     clock_a : clock port map(
         pulse => pulse
@@ -354,7 +360,10 @@ begin
         write   => csgc_mem_write,
         S_MAR_F => mar_mem,
         S_MDR_F => mdr_busab_mem,
-        data    => mem_mdr
+        data    => mem_mdr,
+        TB_switch => TB_switch,
+        TB_addr   => TB_addr,
+        TB_w_data => TB_w_data
     );
     
     pr_a : pr port map(
@@ -364,16 +373,5 @@ begin
         S_BUS_C => alu_busc_others,
         S_PR_F  => pr_busb
     );
-
-    process(pulse) begin
-        if(pulse'event and (pulse and tb_ctl) = '1') then
-            csgc_mem_read  <= read_IP;
-            csgc_mem_write <= write_IP;
-            mar_mem <= S_MAR_F_IP;
-            mdr_busab_mem <= S_MDR_F_IP;
-        else
-            null;
-        end if;
-    end process;
 
 end BEHAVIOR;

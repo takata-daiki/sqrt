@@ -9,11 +9,9 @@ architecture BEHAVIOR of tb_core is
 
     component core is
         port(
-            tb_ctl     : in std_logic;
-            read_IP    : in std_logic;
-            write_IP   : in std_logic;
-            S_MAR_F_IP : in  std_logic_vector(7 downto 0);
-            S_MDR_F_IP : in  std_logic_vector(15 downto 0);
+            switch_IP  : in std_logic;
+            addr_IP    : in std_logic_vector(7 downto 0);
+            w_data_IP  : in std_logic_vector(15 downto 0);
             clk_OP     : out std_logic; 
             data_OP    : out std_logic_vector(15 downto 0);
             GR0_OP,  GR1_OP,  GR2_OP,  GR3_OP,
@@ -23,12 +21,9 @@ architecture BEHAVIOR of tb_core is
         );
     end component;
 
-    signal addr       : std_logic_vector(7 downto 0) := "00000011";
-    signal tb_ctl     : std_logic := '1';
-    signal read_IP    : std_logic := '0';
-    signal write_IP   : std_logic := '1';
-    signal S_MAR_F_IP : std_logic_vector(7 downto 0);
-    signal S_MDR_F_IP : std_logic_vector(15 downto 0);
+    signal switch_IP  : std_logic := '1';
+    signal addr_IP    : std_logic_vector(7 downto 0)  := "00000011";
+    signal w_data_IP  : std_logic_vector(15 downto 0) := "0000000000000000";
     signal clk_OP     : std_logic; 
     signal data_OP    : std_logic_vector(15 downto 0);
     signal GR0_OP,  GR1_OP,  GR2_OP,  GR3_OP,
@@ -37,11 +32,8 @@ architecture BEHAVIOR of tb_core is
            GR12_OP, GR13_OP, GR14_OP, GR15_OP : std_logic_vector(15 downto 0);
 
 begin
-    S_MAR_F_IP <= addr;
-
     core_a : core port map(
-            tb_ctl, read_IP, write_IP,
-            S_MAR_F_IP, S_MDR_F_IP,
+            switch_IP, addr_IP, w_data_IP,
             clk_OP, data_OP,
             GR0_OP,  GR1_OP,  GR2_OP,  GR3_OP,
             GR4_OP,  GR5_OP,  GR6_OP,  GR7_OP,
@@ -50,27 +42,19 @@ begin
     );
 
     process(clk_OP) begin
-        if(clk_OP'event and clk_OP = '1') then
-            case addr is
+        if(clk_OP'event and (clk_OP and switch_IP) = '1') then
+            case addr_IP is
                 when "00000000" =>
-                    write_IP <= '1';
-                    S_MDR_F_IP <= "0011000001110101";
-                    tb_ctl <= '0';             
+                    w_data_IP <= "0011000001110101";
+                    switch_IP <= '0';             
                 when "00000001" =>
-                    write_IP <= '1';
-                    S_MDR_F_IP <= "0011000100010101";
+                    w_data_IP <= "0011000100010101";
                 when "00000010" =>
-                    write_IP <= '1';
-                    S_MDR_F_IP <= "0101000000000001";
+                    w_data_IP <= "0101000000000001";
                 when others =>
                     null;
-            end case;
-
-            if(tb_ctl = '1') then             
-                addr <= addr - "00000001";
-            else
-                null;
-            end if;
+            end case;     
+            addr_IP <= addr_IP - "00000001";
         else
             null;
         end if;

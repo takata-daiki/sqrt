@@ -77,7 +77,7 @@ begin
                     serial  <= "000" & "00000" & "00000000" & "0" & "0000" & "0000" & "0000" & "0000" & "01110" & "0000";
                 when "0011" =>  -- MDR->GRA, PR=PR+1
                     phase <= "1000";
-                    serial  <= "000" & "00010" & "00000000" & "0" & "0000" & "0000" & opeA & "0001" & "00000" & "0001";
+                    serial  <= "000" & "00010" & "00000000" & "1" & "0000" & "0000" & opeA & "0001" & "00000" & "0001";
                 when others => null;
                 end case;
 
@@ -107,7 +107,7 @@ begin
                 case phase is
                 when "0000" =>  -- GRA=GRA+GRB, PR=PR+1
                     phase <= "1000";
-                    serial  <= "010" & "10000" & "00000000" & "1" & opeA & opeB_gr & opeA & "0001" & "00000" & "0101";
+                    serial  <= "010" & "10000" & "00000000" & "1" & opeA & opeB_gr & opeA & "0101" & "00000" & "0101";
                 when others => null;
                 end case;
 
@@ -115,7 +115,7 @@ begin
                 case phase is
                 when "0000" =>  -- GRA=GRA-GRB, PR=PR+1
                     phase <= "1000";
-                    serial  <= "010" & "10000" & "00000000" & "1" & opeA & opeB_gr & opeA & "0001" & "00000" & "0110";
+                    serial  <= "010" & "10000" & "00000000" & "1" & opeA & opeB_gr & opeA & "0101" & "00000" & "0110";
                 when others => null;
                 end case;
 
@@ -123,7 +123,7 @@ begin
                 case phase is
                 when "0000" =>  -- GRA=GRA<<GRB, PR=PR+1
                     phase <= "1000";
-                    serial  <= "010" & "10000" & "00000000" & "1" & opeA & opeB_gr & opeA & "0001" & "00000" & "0111";
+                    serial  <= "010" & "10000" & "00000000" & "1" & opeA & opeB_gr & opeA & "0101" & "00000" & "0111";
                 when others => null;
                 end case;
 
@@ -131,7 +131,7 @@ begin
                 case phase is
                 when "0000" =>  -- GRA=GRA>>GRB, PR=PR+1
                     phase <= "1000";
-                    serial  <= "010" & "10000" & "00000000" & "1" & opeA & opeB_gr & opeA & "0001" & "00000" & "1000";
+                    serial  <= "010" & "10000" & "00000000" & "1" & opeA & opeB_gr & opeA & "0101" & "00000" & "1000";
                 when others => null;
                 end case;
 
@@ -139,7 +139,7 @@ begin
                 case phase is
                 when "0000" =>  -- GRA=GRAnandGRB, PR=PR+1
                     phase <= "1000";
-                    serial  <= "010" & "10000" & "00000000" & "1" & opeA & opeB_gr & opeA & "0001" & "00000" & "1001";
+                    serial  <= "010" & "10000" & "00000000" & "1" & opeA & opeB_gr & opeA & "0101" & "00000" & "1001";
                 when others => null;
                 end case;
 

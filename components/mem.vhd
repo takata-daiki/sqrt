@@ -3,7 +3,7 @@ use ieee.std_logic_1164.all;
 use ieee.std_logic_unsigned.all;
 
 entity mem is
-  port(clk, read, write, S_MEMlat : in std_logic;
+  port(clk, read, write : in std_logic;
        S_MAR_F : in std_logic_vector(7 downto 0);
        S_MDR_F : in std_logic_vector(15 downto 0);
        data : out std_logic_vector(15 downto 0));

@@ -28,11 +28,15 @@ signal shift_ov : std_logic;
 
 -- Main --
 begin
+    busC <= ans;
+
     -- Calculate Process --
     process(func, busA, busB) begin
         case func is
             when "0000" =>            -- select busA (not only HALT) --
                 ans <= busA;
+            when "0001" =>            -- select busB (not only LD1) --
+                ans <= busB;
             when "0101" =>            -- ADD --
                 ans <= busA + busB;
             when "0110" =>            -- SUB --
@@ -103,8 +107,8 @@ begin
                 ans <= busA;  --------------------------- general register
             when "1111" =>            -- DISP --
                 ans <= "000000000000" & busA(3 downto 0);
-            when others =>            -- select busB (not only LD,LAD,...) --
-                ans <= busB;
+            when others =>
+                ans <= "XXXXXXXXXXXXXXXX";
         end case;
     end process;
 
@@ -113,7 +117,6 @@ begin
         atop <= busA(15);
         btop <= busB(15);
         ftop <= ans(15);
-        busC <= ans;
         if(ans = "0000000000000000") then
             outZ <= '1';
         else

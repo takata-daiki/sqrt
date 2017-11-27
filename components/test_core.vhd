@@ -56,25 +56,26 @@ architecture BEHAVIOR of test_core is
 
     component csgc is 
     port(
-        clk      : in  std_logic;
-        mlang    : in  std_logic_vector(15 downto 0);
-        ba_ctl   : out std_logic_vector(2 downto 0);
-        bb_ctl   : out std_logic_vector(4 downto 0);
-        address  : out std_logic_vector(7 downto 0);
-        gr_lat   : out std_logic;
-        gra      : out std_logic_vector(3 downto 0);
-        grb      : out std_logic_vector(3 downto 0);
-        grc      : out std_logic_vector(3 downto 0);
-        ir_lat   : out std_logic;
-        fr_lat   : out std_logic;
-        pr_lat   : out std_logic;
-        pr_cnt   : out std_logic;
-        mar_lat  : out std_logic;
-        mdr_lat  : out std_logic;
-        mdr_sel  : out std_logic;
-        m_read   : out std_logic;
-        m_write  : out std_logic;
-        func     : out std_logic_vector(3 downto 0)
+        clk       : in  std_logic;
+        mlang     : in  std_logic_vector(15 downto 0);
+        ba_ctl    : out std_logic_vector(2 downto 0);
+        bb_ctl    : out std_logic_vector(4 downto 0);
+        address   : out std_logic_vector(7 downto 0);
+        gr_lat    : out std_logic;
+        gra       : out std_logic_vector(3 downto 0);
+        grb       : out std_logic_vector(3 downto 0);
+        grc       : out std_logic_vector(3 downto 0);
+        ir_lat    : out std_logic;
+        fr_lat    : out std_logic;
+        pr_lat    : out std_logic;
+        pr_cnt    : out std_logic;
+        mar_lat   : out std_logic;
+        mdr_lat   : out std_logic;
+        mdr_sel   : out std_logic;
+        m_read    : out std_logic;
+        m_write   : out std_logic;
+        func      : out std_logic_vector(3 downto 0);
+	    phaseView : out std_logic_vector(3 downto 0)
     );
     end component;
     
@@ -188,6 +189,7 @@ architecture BEHAVIOR of test_core is
     signal csgc_mem_read   : std_logic;
     signal csgc_mem_write  : std_logic;
     signal csgc_alu_func   : std_logic_vector(3 downto 0);
+    signal phaseView       : std_logic_vector(3 downto 0);
         
     -- fr
     signal fr_alu_z : std_logic;
@@ -279,25 +281,26 @@ begin
 	);
 
     csgc_a : csgc port map(
-        clk      => pulse,
-        mlang    => ir_csgc,
-        ba_ctl   => csgc_busa_ctl,
-        bb_ctl   => csgc_busb_ctl,
-        address  => csgc_busab_addr,
-        gr_lat   => csgc_gr_lat,
-        gra      => csgc_gr_asel,
-        grb      => csgc_gr_bsel,
-        grc      => csgc_gr_csel,
-        ir_lat   => csgc_ir_lat,
-        fr_lat   => csgc_fr_lat,
-        pr_lat   => csgc_pr_lat,
-        pr_cnt   => csgc_pr_cntup,
-        mar_lat  => csgc_mar_lat,
-        mdr_lat  => csgc_mdr_lat,
-        mdr_sel  => csgc_mdr_sel,
-        m_read   => csgc_mem_read,
-        m_write  => csgc_mem_write,
-        func     => csgc_alu_func
+        clk       => pulse,
+        mlang     => ir_csgc,
+        ba_ctl    => csgc_busa_ctl,
+        bb_ctl    => csgc_busb_ctl,
+        address   => csgc_busab_addr,
+        gr_lat    => csgc_gr_lat,
+        gra       => csgc_gr_asel,
+        grb       => csgc_gr_bsel,
+        grc       => csgc_gr_csel,
+        ir_lat    => csgc_ir_lat,
+        fr_lat    => csgc_fr_lat,
+        pr_lat    => csgc_pr_lat,
+        pr_cnt    => csgc_pr_cntup,
+        mar_lat   => csgc_mar_lat,
+        mdr_lat   => csgc_mdr_lat,
+        mdr_sel   => csgc_mdr_sel,
+        m_read    => csgc_mem_read,
+        m_write   => csgc_mem_write,
+        func      => csgc_alu_func,
+        phaseView => phaseView
     );
     
     fr_a : fr port map(

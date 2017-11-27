@@ -10,7 +10,7 @@ end pr;
 
 architecture BEHAVIOR of pr is
 
-signal rst : std_logic_vector(15 downto 0);
+signal rst : std_logic_vector(15 downto 0) := "0000000000000000";
 
 begin
   S_PR_F <= rst;

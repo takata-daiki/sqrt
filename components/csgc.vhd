@@ -23,7 +23,7 @@ entity csgc is
         m_read    : out std_logic;
         m_write   : out std_logic;
         func      : out std_logic_vector(3 downto 0);
-	phaseView : out std_logic_vector(3 downto 0)
+	    phaseView : out std_logic_vector(3 downto 0)
     );
 end csgc;
 
@@ -231,9 +231,10 @@ begin
                 when others => null;
                 end case;
             when "1111" =>    -- DISP --
-                phase <= "0000";
+                phase <= "1000";
                 serial  <= "000" & "00000" & "00000000" & "0" & "0000" & "0000" & "0000" & "0000" & "00000" & "0000";
-            when others => null;
+            when others =>
+                phase <= "1000";
             end case;
             
             -- go next instruction --

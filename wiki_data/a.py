@@ -5,6 +5,7 @@ a = 0
 y = 0
 n = 0
 
+x <<= 16
 t = x
 while t > 0:
     t >>= 1
@@ -20,6 +21,6 @@ for i in range(n, -1, -2):
         y += 1
         x -= y << i
     y += c
-    print('c, a, y, x:', c, a, hex(y), hex(x))
+    print('c, a, y, x:', c, a, hex(y), hex(x), i)
 
 print(a)

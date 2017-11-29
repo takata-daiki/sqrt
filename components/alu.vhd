@@ -42,45 +42,57 @@ begin
             when "0110" =>            -- SUB --
                 ans <= busA - busB;
             when "0111" =>            -- SL --
-                case busB(3 downto 0) is
-                    when "0000" => shift_ov <= '0'; ans <= busA;
-                    when "0001" => shift_ov <= busA(15); ans <= busA(14 downto 0) & '0';
-                    when "0010" => shift_ov <= busA(14); ans <= busA(13 downto 0) & "00";
-                    when "0011" => shift_ov <= busA(13); ans <= busA(12 downto 0) & "000";
-                    when "0100" => shift_ov <= busA(12); ans <= busA(11 downto 0) & "0000";
-                    when "0101" => shift_ov <= busA(11); ans <= busA(10 downto 0) & "00000";
-                    when "0110" => shift_ov <= busA(10); ans <= busA( 9 downto 0) & "000000";
-                    when "0111" => shift_ov <= busA( 9); ans <= busA( 8 downto 0) & "0000000";
-                    when "1000" => shift_ov <= busA( 8); ans <= busA( 7 downto 0) & "00000000";
-                    when "1001" => shift_ov <= busA( 7); ans <= busA( 6 downto 0) & "000000000";
-                    when "1010" => shift_ov <= busA( 6); ans <= busA( 5 downto 0) & "0000000000";
-                    when "1011" => shift_ov <= busA( 5); ans <= busA( 4 downto 0) & "00000000000";
-                    when "1100" => shift_ov <= busA( 4); ans <= busA( 3 downto 0) & "000000000000";
-                    when "1101" => shift_ov <= busA( 3); ans <= busA( 2 downto 0) & "0000000000000";
-                    when "1110" => shift_ov <= busA( 2); ans <= busA( 1 downto 0) & "00000000000000";
-                    when "1111" => shift_ov <= busA( 1); ans <= busA(0) & "000000000000000";
-                    when others => shift_ov <= '0'; ans <= busA;
-                end case;
+                if(busB = "0000000000010000") then
+                    shift_ov <= busA(0); ans <= "0000000000000000";
+                elsif(busB > "0000000000010000") then
+                    shift_ov <= '0'; ans <= "0000000000000000";
+                else
+                    case busB(3 downto 0) is
+                        when "0000" => shift_ov <= '0'; ans <= busA;
+                        when "0001" => shift_ov <= busA(15); ans <= busA(14 downto 0) & '0';
+                        when "0010" => shift_ov <= busA(14); ans <= busA(13 downto 0) & "00";
+                        when "0011" => shift_ov <= busA(13); ans <= busA(12 downto 0) & "000";
+                        when "0100" => shift_ov <= busA(12); ans <= busA(11 downto 0) & "0000";
+                        when "0101" => shift_ov <= busA(11); ans <= busA(10 downto 0) & "00000";
+                        when "0110" => shift_ov <= busA(10); ans <= busA( 9 downto 0) & "000000";
+                        when "0111" => shift_ov <= busA( 9); ans <= busA( 8 downto 0) & "0000000";
+                        when "1000" => shift_ov <= busA( 8); ans <= busA( 7 downto 0) & "00000000";
+                        when "1001" => shift_ov <= busA( 7); ans <= busA( 6 downto 0) & "000000000";
+                        when "1010" => shift_ov <= busA( 6); ans <= busA( 5 downto 0) & "0000000000";
+                        when "1011" => shift_ov <= busA( 5); ans <= busA( 4 downto 0) & "00000000000";
+                        when "1100" => shift_ov <= busA( 4); ans <= busA( 3 downto 0) & "000000000000";
+                        when "1101" => shift_ov <= busA( 3); ans <= busA( 2 downto 0) & "0000000000000";
+                        when "1110" => shift_ov <= busA( 2); ans <= busA( 1 downto 0) & "00000000000000";
+                        when "1111" => shift_ov <= busA( 1); ans <= busA(0) & "000000000000000";
+                        when others => shift_ov <= '0'; ans <= busA;
+                    end case;
+                end if;
             when "1000" =>            -- SR --
-                case busB(3 downto 0) is
-                    when "0000" => shift_ov <= '0'; ans <= busA;
-                    when "0001" => shift_ov <= busA( 0); ans <= '0' & busA(15 downto 1);
-                    when "0010" => shift_ov <= busA( 1); ans <= "00" & busA(15 downto 2);
-                    when "0011" => shift_ov <= busA( 2); ans <= "000" & busA(15 downto 3);
-                    when "0100" => shift_ov <= busA( 3); ans <= "0000" & busA(15 downto 4);
-                    when "0101" => shift_ov <= busA( 4); ans <= "00000" & busA(15 downto 5);
-                    when "0110" => shift_ov <= busA( 5); ans <= "000000" & busA(15 downto 6);
-                    when "0111" => shift_ov <= busA( 6); ans <= "0000000" & busA(15 downto 7);
-                    when "1000" => shift_ov <= busA( 7); ans <= "00000000" & busA(15 downto 8);
-                    when "1001" => shift_ov <= busA( 8); ans <= "000000000" & busA(15 downto 9);
-                    when "1010" => shift_ov <= busA( 9); ans <= "0000000000" & busA(15 downto 10);
-                    when "1011" => shift_ov <= busA(10); ans <= "00000000000" & busA(15 downto 11);
-                    when "1100" => shift_ov <= busA(11); ans <= "000000000000" & busA(15 downto 12);
-                    when "1101" => shift_ov <= busA(12); ans <= "0000000000000" & busA(15 downto 13);
-                    when "1110" => shift_ov <= busA(13); ans <= "00000000000000" & busA(15 downto 14);
-                    when "1111" => shift_ov <= busA(14); ans <= "000000000000000" & busA(15);
-                    when others => shift_ov <= '0'; ans <= busA;
-                end case;
+                if(busB = "0000000000010000") then
+                    shift_ov <= busA(15); ans <= "0000000000000000";
+                elsif(busB > "0000000000010000") then
+                    shift_ov <= '0'; ans <= "0000000000000000";
+                else
+                    case busB(3 downto 0) is
+                        when "0000" => shift_ov <= '0'; ans <= busA;
+                        when "0001" => shift_ov <= busA( 0); ans <= '0' & busA(15 downto 1);
+                        when "0010" => shift_ov <= busA( 1); ans <= "00" & busA(15 downto 2);
+                        when "0011" => shift_ov <= busA( 2); ans <= "000" & busA(15 downto 3);
+                        when "0100" => shift_ov <= busA( 3); ans <= "0000" & busA(15 downto 4);
+                        when "0101" => shift_ov <= busA( 4); ans <= "00000" & busA(15 downto 5);
+                        when "0110" => shift_ov <= busA( 5); ans <= "000000" & busA(15 downto 6);
+                        when "0111" => shift_ov <= busA( 6); ans <= "0000000" & busA(15 downto 7);
+                        when "1000" => shift_ov <= busA( 7); ans <= "00000000" & busA(15 downto 8);
+                        when "1001" => shift_ov <= busA( 8); ans <= "000000000" & busA(15 downto 9);
+                        when "1010" => shift_ov <= busA( 9); ans <= "0000000000" & busA(15 downto 10);
+                        when "1011" => shift_ov <= busA(10); ans <= "00000000000" & busA(15 downto 11);
+                        when "1100" => shift_ov <= busA(11); ans <= "000000000000" & busA(15 downto 12);
+                        when "1101" => shift_ov <= busA(12); ans <= "0000000000000" & busA(15 downto 13);
+                        when "1110" => shift_ov <= busA(13); ans <= "00000000000000" & busA(15 downto 14);
+                        when "1111" => shift_ov <= busA(14); ans <= "000000000000000" & busA(15);
+                        when others => shift_ov <= '0'; ans <= busA;
+                    end case;
+                end if;
             when "1001" =>            -- NAND --
                 ans <= busA nand busB;
             when "1010" =>            -- JMP --

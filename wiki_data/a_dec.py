@@ -30,6 +30,8 @@ for i in range(n, -1, -2):
     j = i - 16
     a <<= 1
     y <<= 1
+    if y > 65535:
+        y %= 65536  # 下16ビットをとる
     y2 = (1 | y)
     c = True
     if func1() < y2:
@@ -46,4 +48,4 @@ for i in range(n, -1, -2):
         y += 1
     print('i, c, a, y, x1, x0:', i, c, a, hex(y), hex(x1), hex(x0))
 
-print(a)
+print(a, ' = ', a / 256.)

@@ -1,0 +1,86 @@
+        LAD   GR0     #00
+        LAD   GR1     #01
+        LAD   GR2     #02
+        LD2   GR3     #00     ; x1 = mem[#00]
+        LD1   GR4     GR0     ; x0 = 0
+        LD1   GR5     GR0     ; a = 0
+        LD1   GR6     GR0     ; y = 0
+        LD1   GR7     GR0     ; i = 0
+        LD1   GR8     GR0     ; j = 0
+        LD1   GR9     GR3     ; t = x1
+LOOP0   SR    GR9     GR1     ; ZF = (t == 0) ? 1 : 0
+        JZE           QUIT0
+        ADD   GR7     GR1
+        jMP           LOOP0
+QUIT0   LD1   GR9     GR7     ; GR9  = tmp(i & 1)
+        NAND  GR9     GR1
+        NAND  GR9     GR9 
+        ADD   GR7     GR9     ; i += i & 1     
+LOOP1   SUB   GR7     GR0     ; SF = (i < 0) ? 1 : 0
+        JMI           QUIT2
+        SL    GR5     GR1     ; a <<= 1
+        SL    GR6     GR1     ; y <<= 1
+        LD1   GR9     GR6     ; GR9  = tmp(y)
+        LD1   GR10    GR1     ; GR10 = tmp(#0001)
+        NAND  GR9     GR9 
+        NAND  GR10    GR10
+        NAND  GR9     GR10    ; GR9 = y2 = (y | #0001)
+GOTO1   JMP   GR15    FUNC1   ; GR14 = (j < 0) ? (x1 << -j) : (x1 >> j)
+        SUB   GR14    GR9     ;
+IF0     JMI           ENDIF0
+ELSE    ADD   GR4     GR1     ; a += 1
+        ADD   GR5     GR1     ; y += 1
+        JMP   GR15    FUNC2   ; GR14 = (j < 0) ? (y >> -j) : (y << j)
+        SUB   GR3     GR14
+        LD1   GR10    GR6     ; GR10 = tmp(y << i)
+        ADD   GR6     GR1     ; y += 1
+        SL    GR10    GR7
+        SUB   GR4     GR10
+IF2     JMI           PROC2
+        JMP           ENDIF1
+PROC2   SUB   GR3     GR1
+        JMP           ENDIF1
+ENDIF0  LD1   GR14    GR4     ; GR14 = tmp(x0)
+        SR    GR14    GR7
+        SUB   GR14    GR9
+IF1     JMI           ENDIF1
+        JMP           ELSE
+ENDIF1  SUB   GR7     GR2  
+        JMP           LOOP1
+QUIT2   LD2   GR3     #03     ; 7seg(3) = mem[#03]
+        LD2   GR4     #04     ; 7seg(4) = mem[#04]
+        LD1   GR6     GR5     ; GR5 = GR4(7 downto 4)
+        LD1   GR7     GR5     ; GR6 = GR4(11 downto 8)
+        LD1   GR8     GR5     ; GR7 = GR4(15 downto 12)
+        LAD   GR9     #08
+        LAD   GR10    #0C
+        SR    GR6     GR4
+        SR    GR7     GR9
+        SR    GR8     GR10
+        DISP  GR8     GR0     ; 7seg(1) <- GR7
+        DISP  GR7     GR1     ; 7seg(2) <- GR6
+        DISP  GR6     GR2     ; 7seg(3) <- GR5
+        DISP  GR5     GR3     ; 7seg(4) <- GR4
+        HALT
+FUNC1   SUB   GR8     GR0     ; SF = (j < 0) ? 1 : 0
+        JMI           _MI1   
+_PL1    LD1   GR14    GR3     ; GR14 = tmp(x1)
+        SR    GR14    GR8
+        RJMP  GR15            ; Return
+_MI1    SUB   GR0     GR8     ; GR0  = tmp(-j)
+        LD1   GR14    GR3     ; GR14 = tmp(x1)
+        SL    GR14    GR0
+        LAD   GR0     #00
+        RJMP  GR15            ; Return
+FUNC2   SUB   GR8     GR0     ; SF = (j < 0) ? 1 : 0
+        JMI           _MI1   
+_PL2    LD1   GR14    GR6     ; GR14 = tmp(y)
+        SL    GR14    GR8
+        SUB   GR3     GR14
+        RJMP  GR15            ; Return
+_MI2    SUB   GR0     GR8     ; GR0  = tmp(-j)
+        LD1   GR14    GR6     ; GR14 = tmp(y)
+        SR    GR14    GR0
+        SUB   GR3     GR14
+        LAD   GR0     #00
+        RJMP  GR15            ; Return

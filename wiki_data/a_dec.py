@@ -1,5 +1,17 @@
 #!/usr/bin/env python3
 
+def func1():
+    if j < 0:
+        return x1 << -j
+    else:        
+        return x1 >> j
+
+def func2():
+    if j < 0:
+        return y >> -j
+    else:        
+        return y << j
+
 x1 = int(input())
 x0 = 0
 a = 0
@@ -19,29 +31,19 @@ for i in range(n, -1, -2):
     a <<= 1
     y <<= 1
     y2 = (1 | y)
-    if j < 0:
-        j = -j
-        c1 = y2 <= x1 << j
-        c2 = y2 <= x0 >> i
-        c = c1 | c2
-        if c:
-            a += 1
-            y += 1
-            x1 -= y >> j
-            x0 -= (y << i) % 65536  # 下16ビットをとる
-            if x0 < 0:
-                x1 -= 1
-                x0 += 65536
-    else:
-        c1 = y2 <= x1 >> j
-        c2 = y2 <= x0 >> i
-        c = c1 | c2
-        if c:
-            a += 1
-            y += 1
-            x1 -= y << j
-            x0 -= (y << i) % 65536  # 下16ビットをとる
-    y += c
+    c = True
+    if func1() < y2:
+        if x0 >> i < y2:
+            c = False
+    if c:
+        a += 1
+        y += 1
+        x1 -= func2()
+        x0 -= (y << i) % 65536  # 下16ビットをとる
+        if x0 < 0:
+            x1 -= 1
+            x0 += 65536  # 下16ビットをとる
+        y += 1
     print('i, c, a, y, x1, x0:', i, c, a, hex(y), hex(x1), hex(x0))
 
 print(a)

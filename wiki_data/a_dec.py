@@ -48,4 +48,4 @@ for i in range(n, -1, -2):
         y += 1
     print('i, c, a, y, x1, x0:', i, c, a, hex(y), hex(x1), hex(x0))
 
-print(a, ' = ', a / 256.)
+print(hex(a), ' = ', a / 256.)

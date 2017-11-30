@@ -147,9 +147,9 @@ begin
                 end if;
             when "0110" =>
                 if(((not atop and (btop or ftop)) or (btop and ftop)) = '1') then
-                    outO <= '0';
-                else
                     outO <= '1';
+                else
+                    outO <= '0';
                 end if;
             when "0111" =>
                 outO <= shift_ov;

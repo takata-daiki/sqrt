@@ -35,6 +35,7 @@ for i in range(n, -1, -2):
         y %= 65536  # 下16ビットをとる
     y2 = (1 | y)
     c = True
+    f1 = func1()
     if func1() < y2:
         if x0 >> i < y2:
             c = False
@@ -47,6 +48,16 @@ for i in range(n, -1, -2):
             x1 -= 1
             x0 += 65536  # 下16ビットをとる
         y += 1
-    print('i, c, a, y, x1, x0:', i, c, a, hex(y), hex(x1), hex(x0))
+    print('i, c, a, y, x1, x0, func1, x0>>i, y2 :',
+          "{0:2d}".format(i),
+          "{0:2d}".format(c),
+          "{0:6d}".format(a),
+          "{0:8s}".format(hex(y)),
+          "{0:8s}".format(hex(x1)),
+          "{0:8s}".format(hex(x0)),
+          "{0:6d}".format(f1),
+          "{0:6d}".format(x0>>i),
+          "{0:6d}".format(y2)
+          )
 
 print(hex(a), ' = ', a / 256.)

@@ -2,7 +2,10 @@
 
 def func1():
     if j < 0:
-        return x1 << -j
+        if (32768 >> (-j-1)) < x1:
+            return y2
+        else:
+            return x1 << -j
     else:        
         return x1 >> j
 

@@ -1,5 +1,5 @@
-80: 3000            LAD     GR0     #00     ; GR0 -> RESET
-81: 3101            LAD     GR1     #01     ; GR1 -> RESET
+80: 3000            LAD     GR0     #00     ; GR0 = 0
+81: 3101            LAD     GR1     #01     ; GR1 = 1
 82: 3210            LAD     GR2     #10     ; GR2 -> USE2, USE16
 83: 2300            LD2     GR3     #00     ; x1 = mem[#00]
 84: 1400            LD1     GR4     GR0     ; x0 = 0

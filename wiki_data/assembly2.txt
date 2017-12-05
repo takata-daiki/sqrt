@@ -1,0 +1,112 @@
+80: 3000            LAD     GR0     #00     ; GR0 -> RESET
+81: 3101            LAD     GR1     #01     ; GR1 -> RESET
+82: 3210            LAD     GR2     #10     ; GR2 -> USE2, USE16
+83: 2300            LD2     GR3     #00     ; x1 = mem[#00]
+84: 1400            LD1     GR4     GR0     ; x0 = 0
+85: 1500            LD1     GR5     GR0     ; a = 0
+86: 1600            LD1     GR6     GR0     ; y = 0
+87: 1700            LD1     GR7     GR0     ; i = 0
+88: 1800            LD1     GR8     GR0     ; j = 0
+89: 1900            LD1     GR9     GR0     ; x21 = 0
+8a: 1a00            LD1     GR10    GR0     ; x20 = 0
+8b: 1b00            LD1     GR11    GR0     ; y21 = 0
+8c: 1c00            LD1     GR12    GR0     ; y20 = 0
+8d: 1d03            LD1     GR13    GR3     ; t = x1
+8e: 8d01    LOOP0   SR      GR13    GR1     ; t >>= 1
+8f: b092            JZE             QUIT0   ; if (t == 0) break
+90: 5701            ADD     GR7     GR1     ; i += 1
+91: a08e            JMP             LOOP0
+92: 5702    QUIT0   ADD     GR7     GR2     ; i += 16
+93: 1d07            LD1     GR13    GR7     ; GR13 = tmp(i & 1)
+94: 9d01            NAND    GR13    GR1
+95: 9d0d            NAND    GR13    GR13
+96: 570d            ADD     GR7     GR13    ; i += i & 1
+97: 6700    LOOP1   SUB     GR7     GR0     ; SF = (i < 0) ? 1 : 0
+98: c0b7            JMI             QUIT1
+99: 1807            LD1     GR8     GR7     ; j = i - 16
+9a: afee            JMP     GR15    USE16
+9b: 6802            SUB     GR8     GR2
+9c: 7501            SL      GR5     GR1     ; a <<= 1
+9d: 7601            SL      GR6     GR1     ; y <<= 1
+9e: afda    GETY21  JMP     GR15    _Y21    ; y21 = (y >= MOD) ? 1 : 0
+9f: afdf    GETY20  JMP     GR15    _Y20    ; y20 = y | 1
+a0: afc6    GOFUNC0 JMP     GR15    FUNC0   ; GR13 = tmp(f0) = (j < 0) ? (x1 << -j) : (x1 >> j)
+a1: afe5    GETX21  JMP     GR15    _X21    ; x21 = x1 >> i
+a2: afe8    GETX20  JMP     GR15    _X20    ; x20 = f0 + (x0 >> i)
+a3: 690b    IF0     SUB     GR9     GR11
+a4: d0b4            JOV             ENDIF0
+a5: b0a7    ELIF0   JZE             IF00
+a6: a0a9            JMP             ELSE0
+a7: 6a0c    IF00    SUB     GR10    GR12
+a8: d0b4            JOV             ENDIF0
+a9: 5501    ELSE0   ADD     GR5     GR1     ; a += 1
+aa: 5601            ADD     GR6     GR1     ; y += 1
+ab: afd0    GOFUNC1 JMP     GR15    FUNC1   ; GR13 = tmp(f1) = (j < 0) ? (y >> -j) : (y << j)
+ac: 630d            SUB     GR3     GR13    ; x1 -= f1
+ad: 1d06            LD1     GR13    GR6     ; GR13 = tmp(y << i)
+ae: 7d07            SL      GR13    GR7
+af: 640d            SUB     GR4     GR13    ; x0 -= y << i
+b0: d0b2    IF1     JOV             _PROC1  ; x1 -= (x0 < 0) ? 1 : 0
+b1: a0b3            JMP             ENDIF1
+b2: 6301    _PROC1  SUB     GR3     GR1
+b3: 5601    ENDIF1  ADD     GR6     GR1     ; y += 1
+b4: afec    ENDIF0  JMP     GR15    USE2
+b5: 6702            SUB     GR7     GR2     ; i -= 2
+b6: a097            JMP             LOOP1
+b7: 1005    QUIT1   LD1     GR0     GR5     ; GR0 = a(3 downto 0)
+b8: 3404            LAD     GR4     #04
+b9: 3808            LAD     GR8     #08
+ba: 3c0c            LAD     GR12    #0C
+bb: 1100            LD1     GR1     GR0     ; GR1 = a(7 downto 4)
+bc: 1200            LD1     GR2     GR0     ; GR2 = a(11 downto 8)
+bd: 1300            LD1     GR3     GR0     ; GR3 = a(15 downto 12)
+be: 8104            SR      GR1     GR4
+bf: 8208            SR      GR2     GR8
+c0: 830c            SR      GR3     GR12
+c1: f000            DISP    GR0     GR0     ; 7seg(0) <- GR0
+c2: f101            DISP    GR1     GR1     ; 7seg(1) <- GR1
+c3: f202            DISP    GR2     GR2     ; 7seg(2) <- GR2
+c4: f303            DISP    GR3     GR3     ; 7seg(3) <- GR3
+c5: 0000            HALT
+c6: 6800    FUNC0   SUB     GR8     GR0     ; SF = (j < 0) ? 1 : 0
+c7: c0cb            JMI             _MI0
+c8: 1d03    _PL0    LD1     GR13    GR3     ; GR13 = tmp(x1)
+c9: 8d08            SR      GR13    GR8
+ca: ef00            RJMP    GR15
+cb: 3e00    _MI0    LAD     GR14    #00     ; GR14 = tmp(-j)
+cc: 6e08            SUB     GR14    GR8
+cd: 1d03            LD1     GR13    GR3
+ce: 7d0e            SL      GR13    GR14
+cf: ef00            RJMP    GR15
+d0: 6800    FUNC1   SUB     GR8     GR0     ; SF = (j < 0) ? 1 : 0
+d1: c0d5            JMI             _MI1
+d2: 1d06    _PL1    LD1     GR13    GR6     ; GR13 = tmp(y)
+d3: 7d08            SL      GR13    GR8
+d4: ef00            RJMP    GR15
+d5: 3e00    _MI1    LAD     GR14    #00     ; GR13 = tmp(-j)
+d6: 6e08            SUB     GR14    GR8
+d7: 1d06            LD1     GR13    GR6     ; GR14 = tmp(y)
+d8: 8d0e            SR      GR13    GR14
+d9: ef00            RJMP    GR15
+da: d0dd    _Y21    JOV             _OV1
+db: 1b00    _NOV1   LD1     GR11    GR0
+dc: ef00            RJMP    GR15
+dd: 1b01    _OV1    LD1     GR11    GR1
+de: ef00            RJMP    GR15
+df: 1c06    _Y20    LD1     GR12    GR6
+e0: 1d01            LD1     GR13    GR1     ; GR13 = tmp(~1)
+e1: 9c0c            NAND    GR12    GR12
+e2: 9d0d            NAND    GR13    GR13
+e3: 9c0d            NAND    GR12    GR13
+e4: ef00            RJMP    GR15
+e5: 1903    _X21    LD1     GR9     GR3
+e6: 8907            SR      GR9     GR7
+e7: ef00            RJMP    GR15
+e8: 1a04    _X20    LD1     GR10    GR4
+e9: 8a07            SR      GR10    GR7
+ea: 5a0d            ADD     GR10    GR13
+eb: ef00            RJMP    GR15
+ec: 3202    USE2    LAD     GR2     #02
+ed: ef00            RJMP    GR15
+ee: 3210    USE16   LAD     GR2     #10
+ef: ef00            RJMP    GR15
